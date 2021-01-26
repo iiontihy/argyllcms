@@ -1743,9 +1743,16 @@ spyd2_GetReading(
 		itime = (double)clocks2 / (double)CLKRATE;
 //		a1logd(p->log, 3, "spyd2_GetReading: reading %d was %f secs\n",i,itime);
 
+		//======================================================================
+		// BEGIN OLED optimization for older devices
+
+		double readFlag = 0.0; // indicates whether we were able to read anything on any sensor channel
+
 		/* Accumulate it for weighted average */
 		for (k = 0; k < 8; k++) {
-			if (sensv[k] != 0.0) {		/* Skip value where we didn't get any transitions */
+			// with OLED displays reading of 0.0 is a possibility, especially with older devices (Spyder2)
+			// commenting out the condition for the block below
+			// if (sensv[k] != 0.0) {		/* Skip value where we didn't get any transitions */
 #ifndef NEVER
 				/* Accumulate it for weighted average */
 				a_sensv[k] += sensv[k] * itime;
@@ -1755,7 +1762,8 @@ spyd2_GetReading(
 				a_sensv[k] = sensv[k] * itime;
 				a_w[k] = itime;
 #endif
-			}
+			// }
+			readFlag += sensv[k];  // accumulating readings for all channels
 		}
 		
 #ifdef DO_ADAPTIVE
@@ -1765,10 +1773,12 @@ spyd2_GetReading(
 
 		/* Decide whether to go around again */
 
-		if (maxtcnt <= (100/16)) {
+		if (maxtcnt <= (100/16) && readFlag != 0.0) { // readFlag is part of the OLED optimization for older devices
 			nframes *= 16;			/* Typically 16 seconds */
 			a1logd(p->log, 3, "spyd2_GetReading: using maximum integration time\n");
-		} else if (maxtcnt < 100) {
+		} else if (maxtcnt < 100 && readFlag != 0.0) { // readFlag is part of the OLED optimization for older devices
+		// END OLED optimization for older devices
+		//======================================================================
 			double mulf;
 			mulf = 100.0/maxtcnt;
 			mulf -= 0.8;			/* Just want to accumulate up to target, not re-do it */
