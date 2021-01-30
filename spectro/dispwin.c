@@ -1,5 +1,5 @@
 
-/* 
+/*
  * Argyll Color Correction System
  * Display target patch window
  *
@@ -40,13 +40,13 @@
  * by multiple CRTCs gets treated as a single item. (How does Xinerama emulation
  * handle this though ?) - i.e. might have to duplicate profile atoms,
  * set both VideoLUTs when one is set, deal with EDID/ucmm confusion etc.
- * Note that XRandR Xinerama emulation changes with v1.5 and MST. 
+ * Note that XRandR Xinerama emulation changes with v1.5 and MST.
  *
  * Should look at MSWin & OS X uninstall profile function, and see if
  * requirement of supplying profile name can be removed (just like X11 case).
  *
  * Should probably check the display attributes (like visual depth)
- * and complain if we aren't using 24 bit color or better. 
+ * and complain if we aren't using 24 bit color or better.
  *
  * Ideally should distinguish clearly between not having access to RAMDAC/VideoLuts
  * (fail) vs. the display not having them at all.
@@ -77,6 +77,7 @@
 #include <signal.h>
 #ifndef NT
 #include <unistd.h>
+#include <sdkddkver.h>
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -179,11 +180,11 @@ CFUUIDRef CGDisplayCreateUUIDFromDisplayID (uint32_t displayID);
 # define debugrr2l(lev, xx)	fprintf xx
 #else
 #define errout stderr
-# define debug(xx) 
+# define debug(xx)
 # define debug2(xx)
-# define debugr(xx) if (p->ddebug) fprintf(errout, xx ) 
+# define debugr(xx) if (p->ddebug) fprintf(errout, xx )
 # define debugr2(xx) if (p->ddebug) fprintf xx
-# define debugrr(xx) if (callback_ddebug) fprintf(errout, xx ) 
+# define debugrr(xx) if (callback_ddebug) fprintf(errout, xx )
 # define debugrr2(xx) if (callback_ddebug) fprintf xx
 # define debugrr2l(lev, xx) if (callback_ddebug >= lev) fprintf xx
 #endif
@@ -193,7 +194,7 @@ CFUUIDRef CGDisplayCreateUUIDFromDisplayID (uint32_t displayID);
 /* Display enumeration code */
 /* ===================================================================== */
 
-int callback_ddebug = 0;	/* Diagnostic global for get_displays() and get_a_display() */  
+int callback_ddebug = 0;	/* Diagnostic global for get_displays() and get_a_display() */
 							/* and events */
 
 #ifdef NT
@@ -210,7 +211,7 @@ static BOOL CALLBACK MonitorEnumProc(
 	disppath **disps = *pdisps;
 	MONITORINFOEX pmi;
 	int ndisps = 0;
-	
+
 	debugrr2((errout, "MonitorEnumProc() called with hMonitor = 0x%x\n",hMonitor));
 
 	/* Get some more information */
@@ -272,17 +273,18 @@ static BOOL CALLBACK MonitorEnumProc(
 
 BOOL (WINAPI* pEnumDisplayDevices)(PVOID,DWORD,PVOID,DWORD) = NULL;
 
-#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
+//#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
 
-typedef enum {
+/*typedef enum {
 	WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE,
 	WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER
 } WCS_PROFILE_MANAGEMENT_SCOPE;
+*/
 
 BOOL (WINAPI* pWcsAssociateColorProfileWithDevice)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR) = NULL;
 BOOL (WINAPI* pWcsDisassociateColorProfileFromDevice)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR) = NULL;
 
-#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
+//#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
 
 /* See if we can get the wanted function calls */
 /* return nz if OK */
@@ -298,11 +300,11 @@ static int setup_dyn_calls() {
 			dyn_inited = 0;
 
 		/* Vista calls */
-#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
+//#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
 		pWcsAssociateColorProfileWithDevice = (BOOL (WINAPI*)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR)) GetProcAddress(LoadLibrary("mscms"), "WcsAssociateColorProfileWithDevice");
 		pWcsDisassociateColorProfileFromDevice = (BOOL (WINAPI*)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR)) GetProcAddress(LoadLibrary("mscms"), "WcsDisassociateColorProfileFromDevice");
 		/* These are checked individually */
-#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
+//#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
 	}
 
 	return dyn_inited;
@@ -493,7 +495,7 @@ disppath **get_displays() {
 		disps[i]->sy = dbound.origin.y;
 		disps[i]->sw = dbound.size.width;
 		disps[i]->sh = dbound.size.height;
-			
+
 		/* Try and get some information about the display */
 		if ((dport = CGDisplayIOServicePort(dids[i])) == MACH_PORT_NULL) {
 			debugrr("CGDisplayIOServicePort returned error\n");
@@ -685,7 +687,7 @@ disppath **get_displays() {
 			int xj;						/* working crtc index */
 			int xk;						/* working output index */
 
-			if (minv >= 3 && _XRRGetScreenResourcesCurrent != NULL) { 
+			if (minv >= 3 && _XRRGetScreenResourcesCurrent != NULL) {
 				scrnres = _XRRGetScreenResourcesCurrent(mydisplay, RootWindow(mydisplay,i));
 
 			} else {
@@ -703,7 +705,7 @@ disppath **get_displays() {
 			/* first, while keeping the rest in order. */
 
 			/* Locate the crtc index that contains the primary (if any) */
-			if (minv >= 3 && _XRRGetOutputPrimary != NULL) { 
+			if (minv >= 3 && _XRRGetOutputPrimary != NULL) {
 				XID primary;				/* Primary output ID */
 
 				primary = _XRRGetOutputPrimary(mydisplay, RootWindow(mydisplay,i));
@@ -712,15 +714,15 @@ disppath **get_displays() {
 				if (primary != None) {
 					for (j = 0; j < scrnres->ncrtc; j++) {
 						XRRCrtcInfo *crtci = NULL;
-		
+
 						if ((crtci = XRRGetCrtcInfo(mydisplay, scrnres, scrnres->crtcs[j])) == NULL)
 							continue;
-		
+
 						if (crtci->mode == None || crtci->noutput == 0) {
 							XRRFreeCrtcInfo(crtci);
 							continue;
 						}
-		
+
 						for (k = 0; k < crtci->noutput; k++) {
 							if (crtci->outputs[k] == primary) {
 								pix = j;
@@ -748,7 +750,7 @@ disppath **get_displays() {
 					if (j == 0)
 						xj = pix;			/* Start with crtc containing primary */
 
-					else if (xj == pix)		/* We've up to primary that we've alread done */	
+					else if (xj == pix)		/* We've up to primary that we've alread done */
 						xj++;				/* Skip it */
 				}
 
@@ -777,7 +779,7 @@ disppath **get_displays() {
 					if (has_primary && xj == pix) {
 						if (k == 0)
 							xk = pop;			/* Start with primary output */
-						else if (xk == pop)		/* We've up to primary that we've alread done */	
+						else if (xk == pop)		/* We've up to primary that we've alread done */
 							xk++;				/* Skip it */
 					}
 
@@ -787,8 +789,8 @@ disppath **get_displays() {
 					}
 					if (k == 0)					/* Save this so we can label any clones */
 						outi0 = outi;
-		
-					if (outi->connection == RR_Disconnected) { 
+
+					if (outi->connection == RR_Disconnected) {
 						debugrr2((errout,"Screen %d CRTC %d Output %d is disconnected\n",i,xj,xk));
 						goto next_output;
 					}
@@ -796,7 +798,7 @@ disppath **get_displays() {
 					/* Check that the VideoLUT's are accessible */
 					{
 						XRRCrtcGamma *crtcgam = NULL;
-				
+
 						debugrr("Checking XRandR 1.2 VideoLUT access\n");
 						if ((crtcgam = XRRGetCrtcGamma(mydisplay, scrnres->crtcs[xj])) == NULL
 						 || crtcgam->size == 0) {
@@ -882,7 +884,7 @@ disppath **get_displays() {
 					disps[ndisps]->sw = crtci->width;
 					disps[ndisps]->sh = crtci->height;
 					disps[ndisps]->crtc = scrnres->crtcs[xj];		/* XID of CRTC */
-					disps[ndisps]->output = crtci->outputs[xk];		/* XID of output */		
+					disps[ndisps]->output = crtci->outputs[xk];		/* XID of output */
 
 					sprintf(desc1,"Monitor %d, Output %s",ndisps+1,outi->name);
 					sprintf(desc2,"%s at %d, %d, width %d, height %d",desc1,
@@ -942,7 +944,7 @@ disppath **get_displays() {
 					/* Create the atom of the output that may contain the associated ICC profile */
 					if ((disps[ndisps]->icc_out_atom = XInternAtom(mydisplay, "_ICC_PROFILE", False)) == None)
 						error("Unable to intern atom '%s'","_ICC_PROFILE");
-		
+
 					/* Grab the EDID from the output */
 					{
 						Atom edid_atom, ret_type;
@@ -966,7 +968,7 @@ disppath **get_displays() {
 							/* Get the EDID_DATA */
 							} else {
 								if (XRRGetOutputProperty(mydisplay, crtci->outputs[xk], edid_atom,
-								            0, 0x7ffffff, False, False, XA_INTEGER, 
+								            0, 0x7ffffff, False, False, XA_INTEGER,
    		                            &ret_type, &ret_format, &ret_len, &ret_togo, &atomv) == Success
 							            && (ret_len == 128 || ret_len == 256)) {
 									if ((disps[ndisps]->edid = malloc(sizeof(unsigned char) * ret_len)) == NULL) {
@@ -1077,7 +1079,7 @@ disppath **get_displays() {
 				XCloseDisplay(mydisplay);
 				return NULL;
 			}
-	
+
 			debugrr2((errout, "Display %d name = '%s'\n",i,disps[i]->name));
 			if (xai != NULL) {					/* Xinerama */
 				/* xai[i].screen_number should be == i */
@@ -1109,7 +1111,7 @@ disppath **get_displays() {
 				error("Unable to intern atom '%s'",desc1);
 
 			/* See if we can locate the EDID of the monitor for this screen */
-			for (j = 0; j < 2; j++) { 
+			for (j = 0; j < 2; j++) {
 				char edid_name[50];
 				Atom edid_atom, ret_type;
 				int ret_format = 8;
@@ -1131,7 +1133,7 @@ disppath **get_displays() {
 				if ((edid_atom = XInternAtom(mydisplay, edid_name, True)) == None)
 					continue;
 				if (XGetWindowProperty(mydisplay, RootWindow(mydisplay, disps[i]->uscreen), edid_atom,
-				            0, 0x7ffffff, False, XA_INTEGER, 
+				            0, 0x7ffffff, False, XA_INTEGER,
 				            &ret_type, &ret_format, &ret_len, &ret_togo, &atomv) == Success
 				            && (ret_len == 128 || ret_len == 256)) {
 					if ((disps[i]->edid = malloc(sizeof(unsigned char) * ret_len)) == NULL) {
@@ -1586,7 +1588,7 @@ static char *plocpath(CMProfileLocation *ploc) {
 			if ((stus = FSRefMakePath(&newRef, path, 256)) == 0 || stus == fnfErr)
 				return strdup((char *)path);
 			return NULL;
-		} 
+		}
 	} else if (ploc->locType == cmPathBasedProfile) {
 		return strdup(ploc->u.pathLoc.path);
 	}
@@ -1635,14 +1637,14 @@ static char *iprof_path(p_scope scope, char *fname) {
 	/* NSFileManager's URLForDirectory: etc. doesn't have ColorSync, */
 	/* so we have no choice but to hard code the paths */
 	if (scope == p_scope_network)
-		dirname = COLORSYNC_DIR_NETWORK; 
+		dirname = COLORSYNC_DIR_NETWORK;
 	else if (scope == p_scope_system)
 		dirname = COLORSYNC_DIR_SYSTEM;
 	else if (scope == p_scope_local)
 		dirname = COLORSYNC_DIR_LOCAL;
 	else {
 		dirname = COLORSYNC_DIR_USER;
-		if ((home = login_HOME()) == NULL){ 
+		if ((home = login_HOME()) == NULL){
 			return NULL;
 		}
 	}
@@ -1784,7 +1786,7 @@ static char *cur_profile(dispwin *p) {
 /* cur_profile_url/ColorSyncProfileCreateWithURL for 10.5 + ? */
 static void *cur_colorsync_ref(dispwin *p) {
 	void *cspr = NULL;
- 
+
 #if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1060
 	CFURLRef url;
 	ColorSyncProfileRef ref;
@@ -1826,7 +1828,7 @@ static void *cur_colorsync_ref(dispwin *p) {
 		return NULL;
 	}
 	cspr = (void *)prof;
-	
+
 #endif
 
 	return cspr;
@@ -1887,7 +1889,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 #ifdef UNIX_APPLE
 	{		/* Transient first */
 		CGGammaValue vals[3][16384];
-	
+
 		for (j = 0; j < 3; j++) {
 			for (i = 0; i < r->nent; i++) {
 				double vv = r->v[j][i];
@@ -1958,7 +1960,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 			CFRelease(url);
 			return 1;
 		}
-	
+
 		if ((icco = new_icc()) == NULL) {
 			debugr2((errout,"Creation of ICC object failed\n"));
 			rd_fp->del(rd_fp);
@@ -1967,7 +1969,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 			CFRelease(url);
 			return 1;
 		}
-	
+
 		/* Read header etc. */
 		if ((rv = icco->read(icco,rd_fp,0)) != 0) {
 			debugr2((errout,"%d, %s",rv,icco->err));
@@ -1988,9 +1990,9 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 			CFRelease(url);
 			return 1;
 		}
-	
+
 		rd_fp->del(rd_fp); rd_fp = NULL;
-	
+
 		/* Replace the description */
 		{
 			icmTextDescription *wo;
@@ -2006,9 +2008,9 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 					return 1;
 				}
 			}
-	
+
 			if ((wo = (icmTextDescription *)icco->add_tag(
-			           icco, icSigProfileDescriptionTag,	icSigTextDescriptionType)) == NULL) { 
+			           icco, icSigProfileDescriptionTag,	icSigTextDescriptionType)) == NULL) {
 				debugr2((errout,"Unable to add Description tag: %d, %s",icco->errc,icco->err));
 				icco->del(icco);
 				free(tpath);
@@ -2016,7 +2018,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 				CFRelease(url);
 				return 1;
 			}
-	
+
 			wo->size = strlen(dst)+1; 	/* Allocated and used size of desc, inc null */
 			wo->allocate((icmBase *)wo);/* Allocate space */
 			strcpy(wo->desc, dst);		/* Copy the string in */
@@ -2036,7 +2038,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 					return 1;
 				}
 			}
-	
+
 			if ((wo = (icmVideoCardGamma *)icco->add_tag(icco, icSigVideoCardGammaTag,
 			                                        icSigVideoCardGammaType)) == NULL) {
 				debugr2((errout,"Unable to add VideoCardGamma tag: %d, %s",icco->errc,icco->err));
@@ -2046,7 +2048,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 				CFRelease(url);
 				return 1;
 			}
-	
+
 			wo->tagType = icmVideoCardGammaTableType;
 			wo->u.table.channels = 3;			/* rgb */
 			wo->u.table.entryCount = r->nent;	/* number of calibration entries */
@@ -2065,7 +2067,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 				}
 			}
 		}
-	
+
 		if ((ppath = malloc(strlen(tpath) + 6)) == NULL) {
 			debugr2((errout,"malloc failed for display '%s'\n",p->name));
 			icco->del(icco);
@@ -2105,7 +2107,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 			CFRelease(url);
 			return 1;
 		}
-	
+
 		if ((rv = icco->write(icco,wr_fp,0)) != 0) {
 			debugr2((errout,"Write file: %d, %s",rv,icco->err));
 			free(ppath);
@@ -2116,7 +2118,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 			CFRelease(url);
 			return 1;
 		}
-	
+
 		icco->del(icco);
 		wr_fp->del(wr_fp);
 
@@ -2246,7 +2248,7 @@ static int dispwin_set_ramdac(dispwin *p, ramdac *r, int persist) {
 			rename(ppath, tpath);
 			return 1;
 		}
-		
+
 		/* Change the description and set the vcgt tag to the calibration */
 		if ((vcgt = malloc(size = (sizeof(CMVideoCardGammaType) - 1 + 3 * 2 * r->nent))) == NULL) {
 			debugr2((errout,"malloc of vcgt tag failed for display '%s' with error %d\n",p->name,ev));
@@ -2461,7 +2463,7 @@ int dispwin_sane_ramdac(ramdac *r) {
 	}
 	for (j = 0; j < 3; j++) {
 		if ((r->v[j][r->nent-1] - r->v[j][0]) < 0.1)	/* Has less than 10% overal contrast */
-			sane = 0; 
+			sane = 0;
 	}
 
 	return sane;
@@ -2533,7 +2535,7 @@ static int set_X11_atom(dispwin *p, char *fname) {
 		debugr2((errout,"Failed to read profile '%s' into buffer\n",fname));
 		return 1;
 	}
-	
+
 	fclose(fp);
 
 	if (p->icc_atom != None) {
@@ -2554,7 +2556,7 @@ static int set_X11_atom(dispwin *p, char *fname) {
 	                XA_CARDINAL, 8, PropModeReplace, atomv, psize);
 		if (g_error_handler_triggered != 0) {
 			debugr("XRRChangeOutputProperty failed\n");
-			warning("Unable to set _ICC_PROFILE property on output"); 
+			warning("Unable to set _ICC_PROFILE property on output");
 		}
 		XSync(p->mydisplay, False);		/* Flush the change out */
 		XSetErrorHandler(NULL);
@@ -2597,7 +2599,7 @@ int dispwin_checkfor_colord(dispwin *p) {
 			cd_edid_install_profile = dlsym(cd_found, "cd_edid_install_profile");
 			cd_edid_remove_profile = dlsym(cd_found, "cd_edid_remove_profile");
 			cd_edid_get_profile = dlsym(cd_found, "cd_edid_get_profile");
-	
+
 			if (cd_edid_install_profile == NULL
 			 || cd_edid_remove_profile == NULL
 			 || cd_edid_get_profile == NULL) {
@@ -2671,16 +2673,16 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 		/* Setup in case we're on Vista */
 		if (scope == p_scope_user)
 			wcssc = WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER;
-		else 
+		else
 			wcssc = WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE;
 
-		if ((wpath = char2wchar(fullpath)) == NULL) { 
+		if ((wpath = char2wchar(fullpath)) == NULL) {
 			debugr2((errout,"char2wchar failed\n"));
 			free(fullpath);
 			return 1;
 		}
 
-		if ((wbname = char2wchar(basename)) == NULL) { 
+		if ((wbname = char2wchar(basename)) == NULL) {
 			debugr2((errout,"char2wchar failed\n"));
 			free(wpath);
 			free(fullpath);
@@ -2696,7 +2698,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 		}
 
 		debugr2((errout,"Installing '%s'\n",fname));
-		
+
 		/* Install doesn't replace an existing installed profile, */
 		/* so we need to try and delete this profile first */
 		if (pWcsDisassociateColorProfileFromDevice != NULL) {
@@ -2795,7 +2797,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 		CFStringRef keys[1];
 		CFURLRef values[1];
 		CFDictionaryRef dict;
-	
+
 		if ((dispuuid = CGDisplayCreateUUIDFromDisplayID(p->ddid)) == NULL) {
 			debugr2((errout,"CGDisplayCreateUUIDFromDisplayID() failed\n"));
 			return 1;
@@ -2818,7 +2820,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 			CFRelease(dispuuid);
 			return 1;
 		}
-		
+
 		/* Register it with the OS and make it the default */
 		if ((cfprofpath = CFStringCreateWithCString(kCFAllocatorDefault, dpath,
 		                                        kCFStringEncodingUTF8)) == NULL) {
@@ -2869,7 +2871,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 		FSRef dirref;
 		char dpath[FILENAME_MAX];
 		char *basename;
-	
+
 		CMProfileLocation ploc;		/* Source profile location */
 		CMProfileRef prof;			/* Source profile */
 		CMProfileLocation dploc;	/* Destinaion profile location */
@@ -2881,7 +2883,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 			vref = kSystemDomain;
 		else if (scope == p_scope_local)
 			vref = kLocalDomain;
-		else 
+		else
 			vref = kUserDomain;
 
 		/* Locate the appropriate ColorSync path */
@@ -2936,7 +2938,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 			debugr2((errout,"CMCopyProfile() failed for file '%s' with error %d\n",dpath,ev));
 			return 1;
 		}
-		
+
 		/* Make it the current profile - updates LUTs */
 		if ((ev = CMSetProfileByAVID((CMDisplayIDType)p->ddid, dprof)) != noErr) {
 			debugr2((errout,"CMSetProfileByAVID() failed for file '%s' with error %d\n",fname,ev));
@@ -2963,7 +2965,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 		 || scope == p_scope_system
 		 || scope == p_scope_local)
 			sc = ucmm_local_system;
-		else 
+		else
 			sc = ucmm_user;
 
 		if (cd_found)
@@ -2975,7 +2977,7 @@ int dispwin_install_profile(dispwin *p, char *fname, ramdac *r, p_scope scope) {
 		if (ev != ucmm_ok) {
 			debugr2((errout,"Installing profile '%s' failed with error %d '%s'\n",fname,ev,ucmm_error_string(ev)));
 			return 1;
-		} 
+		}
 
 		if ((rv = set_X11_atom(p, fname)) != 0) {
 			debugr2((errout,"Setting X11 atom failed"));
@@ -3038,10 +3040,10 @@ int dispwin_uninstall_profile(dispwin *p, char *fname, p_scope scope) {
 		/* Setup in case we're on Vista */
 		if (scope == p_scope_user)
 			wcssc = WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER;
-		else 
+		else
 			wcssc = WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE;
 
-		if ((wbname = char2wchar(basename)) == NULL) { 
+		if ((wbname = char2wchar(basename)) == NULL) {
 			debugr2((errout,"char2wchar failed\n"));
 			free(fullpath);
 			return 1;
@@ -3136,7 +3138,7 @@ int dispwin_uninstall_profile(dispwin *p, char *fname, p_scope scope) {
 		CFURLRef values[1];
 		CFDictionaryRef dict;
 		CFUUIDRef dispuuid;
-	
+
 		/* Determine the location the profile will be installed into */
 		if ((dpath = iprof_path(scope, fname)) == NULL) {
 			debugr2((errout,"iprof_path() failed\n"));
@@ -3201,7 +3203,7 @@ int dispwin_uninstall_profile(dispwin *p, char *fname, p_scope scope) {
 			vref = kSystemDomain;
 		else if (scope == p_scope_local)
 			vref = kLocalDomain;
-		else 
+		else
 			vref = kUserDomain;
 
 		/* Locate the appropriate ColorSync path */
@@ -3255,7 +3257,7 @@ int dispwin_uninstall_profile(dispwin *p, char *fname, p_scope scope) {
 		 || scope == p_scope_system
 		 || scope == p_scope_local)
 			sc = ucmm_local_system;
-		else 
+		else
 			sc = ucmm_user;
 
 		if (cd_found)
@@ -3266,7 +3268,7 @@ int dispwin_uninstall_profile(dispwin *p, char *fname, p_scope scope) {
 		if (ev != ucmm_ok) {
 			debugr2((errout,"Installing profile '%s' failed with error %d '%s'\n",fname,ev,ucmm_error_string(ev)));
 			return 1;
-		} 
+		}
 
 		if (p->icc_atom != None)
 			XDeleteProperty(p->mydisplay, RootWindow(p->mydisplay, 0), p->icc_atom);
@@ -3285,7 +3287,7 @@ int dispwin_uninstall_profile(dispwin *p, char *fname, p_scope scope) {
 }
 
 /* Get the currently installed display profile and return it as an icmFile. */
-/* Set the X11 atom to be the profile we just got */ 
+/* Set the X11 atom to be the profile we just got */
 /* Return the name as well, up to mxlen chars, excluding nul. */
 /* Return NULL if failed. */
 icmFile *dispwin_get_profile(dispwin *p, char *name, int mxlen) {
@@ -3485,7 +3487,7 @@ icmFile *dispwin_get_profile(dispwin *p, char *name, int mxlen) {
 				return NULL;
 			}
 
-			/* Implicitly we set the X11 atom to be the profile we just got */ 
+			/* Implicitly we set the X11 atom to be the profile we just got */
 			debugr2((errout,"Setting X11 atom to current profile '%s'\n",profile));
 			if (set_X11_atom(p, profile) != 0) {
 				debugr2((errout,"Setting X11 atom to profile '%s' failed",profile));
@@ -3493,7 +3495,7 @@ icmFile *dispwin_get_profile(dispwin *p, char *name, int mxlen) {
 			}
 			free(profile);
 			return rd_fp;
-		} 
+		}
 		if (ev != ucmm_no_profile) {
 			debugr2((errout,"Got ucmm error %d '%s'\n",ev,ucmm_error_string(ev)));
 			return NULL;
@@ -3520,7 +3522,7 @@ icmFile *dispwin_get_profile(dispwin *p, char *name, int mxlen) {
 
 			/* Get the ICC profile property */
 			if (XRRGetOutputProperty(p->mydisplay, p->output, p->icc_out_atom,
-			            0, 0x7ffffff, False, False, XA_CARDINAL, 
+			            0, 0x7ffffff, False, False, XA_CARDINAL,
    	                     &ret_type, &ret_format, &ret_len, &ret_togo, &atomv) != Success || ret_len == 0) {
 				debugr("Failed to read ICC_PROFILE property from Xranr output\n");
 			}
@@ -3536,12 +3538,12 @@ icmFile *dispwin_get_profile(dispwin *p, char *name, int mxlen) {
 
 			if (p->myuscreen != 0)
 				sprintf(aname, "_ICC_PROFILE_%d",p->myuscreen);
-		
+
 			/* Get the ICC profile property */
 			if (XGetWindowProperty(p->mydisplay, RootWindow(p->mydisplay, 0), p->icc_atom,
-			            0, 0x7ffffff, False, XA_CARDINAL, 
+			            0, 0x7ffffff, False, XA_CARDINAL,
    	                     &ret_type, &ret_format, &ret_len, &ret_togo, &atomv) != Success || ret_len == 0) {
-				debugr2((errout,"Getting property '%s' from RootWindow\n", aname)); 
+				debugr2((errout,"Getting property '%s' from RootWindow\n", aname));
 				return NULL;
 			}
 		}
@@ -3638,7 +3640,7 @@ static void restore_display(dispwin *p) {
 	XSync(p->mydisplay, False);
 #endif /* UNIX_X11 */
 }
-	
+
 /* ----------------------------------------------- */
 /* On something killing our process, deal with Ramac & ScreenSaver cleanup */
 
@@ -3674,12 +3676,12 @@ static void dispwin_sighandler(int arg) {
 
 	/* Call through to previous handler */
 #ifdef UNIX
-	if (arg == SIGHUP && dispwin_hup != SIG_DFL && dispwin_hup != SIG_IGN) 
+	if (arg == SIGHUP && dispwin_hup != SIG_DFL && dispwin_hup != SIG_IGN)
 		dispwin_hup(arg);
 #endif
-	if (arg == SIGINT && dispwin_int != SIG_DFL && dispwin_int != SIG_IGN) 
+	if (arg == SIGINT && dispwin_int != SIG_DFL && dispwin_int != SIG_IGN)
 		dispwin_int(arg);
-	if (arg == SIGTERM && dispwin_term != SIG_DFL && dispwin_term != SIG_IGN) 
+	if (arg == SIGTERM && dispwin_term != SIG_DFL && dispwin_term != SIG_IGN)
 		dispwin_term(arg);
 
 	amutex_unlock(lock);
@@ -3717,7 +3719,7 @@ static void dispwin_uninstall_signal_handlers(dispwin *p) {
 			}
 		} else {
 			dispwin *pp;
-			for (pp = signal_dispwin; pp != NULL; pp = pp->next) { 
+			for (pp = signal_dispwin; pp != NULL; pp = pp->next) {
 				if (pp->next == p) {
 					pp->next = p->next;
 					break;
@@ -3751,7 +3753,7 @@ typedef struct {
 	int err;					/* Error code */
 } osx_cntx_t;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 @interface DWView : NSView {
@@ -3776,7 +3778,7 @@ unsigned char emptyCursor[43] = {
 /*
  * This doesn't work very well. The only way to work it properly
  * is to create a CGEventTap and do a hide/unhide cursor when
- * the mouse enters the window. This needs the main thread 
+ * the mouse enters the window. This needs the main thread
  * to be dedicated to running the event loop, so would involve
  * some trickiness after main() in every program.
  * - we have done this with numlib/ui.c, so this is possible.
@@ -3797,7 +3799,7 @@ unsigned char emptyCursor[43] = {
 	dispwin *p = cx->p;
 	NSRect frect;
 	NSBezierPath* aPath = [NSBezierPath bezierPath];
-	
+
 	frect = NSMakeRect(p->tx, p->ty, (1.0 + p->tw), (1.0 + p->th));
 
 #if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1040
@@ -3832,12 +3834,12 @@ unsigned char emptyCursor[43] = {
 
 static void doSetNeedsDisplay(void *cntx) {
 	osx_cntx_t *cx = (osx_cntx_t *)cntx;
-	
+
 	[cx->view setNeedsDisplay: YES ];
 
 	cx->err = 0;
 }
-// - - - - - - - - - - - - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - - - - - - - - - - - -
 
 @interface DWWin : NSWindow {
 	osx_cntx_t *cntx;
@@ -3893,7 +3895,7 @@ static void create_my_win(void *cntx) {
 		/* Hmm. Also has "NSDeviceBitsPerSample" entry with value 8 in dict. */
 
 	    NSNumber* screenID = [screenDescription objectForKey:@"NSScreenNumber"];
-	    CGDirectDisplayID ddid = (CGDirectDisplayID)[screenID unsignedIntValue];			
+	    CGDirectDisplayID ddid = (CGDirectDisplayID)[screenID unsignedIntValue];
 		if (ddid == p->ddid) {
 			screen = [screenArray objectAtIndex:i];
 			break;
@@ -4031,7 +4033,7 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 			/* rather than scaling, so we need to scale the fp value to account for this. */
 			if (p->edepth > 8)
 				p->r_rgb[j] = (p->s_rgb[j] * 255 * (1 << (p->edepth - 8)))
-				            /((1 << p->edepth) - 1.0); 	
+				            /((1 << p->edepth) - 1.0);
 		}
 	}
 
@@ -4059,8 +4061,8 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 			/* For video encoding the extra bits of precision are created by bit shifting */
 			/* rather than scaling, so we need to scale the fp value to account for this. */
 			if (p->out_tvenc && p->edepth > 8)
-				vv = (vv * 255 * (1 << (p->edepth - 8)))/((1 << p->edepth) - 1.0); 	
-				
+				vv = (vv * 255 * (1 << (p->edepth - 8)))/((1 << p->edepth) - 1.0);
+
 			/* Determine the ramdac index that the quantized frame buffer */
 			/* value will make use of */
 #ifdef NT
@@ -4097,13 +4099,13 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 				double maxv = 1.0;
 
 				if (p->out_tvenc && p->edepth > 8)
-					maxv = (maxv * 255 * (1 << (p->edepth - 8)))/((1 << p->edepth) - 1.0); 	
+					maxv = (maxv * 255 * (1 << (p->edepth - 8)))/((1 << p->edepth) - 1.0);
 
 				if ((tt-1) == 0) {
 					p->r->v[j][tt-1] = vv;
 				} else {
 					for (i = 0; i <= (tt-1); i++)
-						p->r->v[j][i] = vv * i/(tt-1); 
+						p->r->v[j][i] = vv * i/(tt-1);
 				}
 
 				p->r->v[j][tt] = vv;
@@ -4112,7 +4114,7 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 					p->r->v[j][tt+1] = vv;
 				} else {
 					for (i = tt+1; i < p->r->nent; i++)
-						p->r->v[j][i] = vv + (maxv - vv) * (i - (tt+1))/((p->r->nent-1) - (tt+1)); 
+						p->r->v[j][i] = vv + (maxv - vv) * (i - (tt+1))/((p->r->nent-1) - (tt+1));
 				}
 
 #ifdef NEVER
@@ -4156,7 +4158,7 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 		fip.mi.dwExtraInfo = 0;
 		SendInput(1, &fip, sizeof(INPUT));
 #endif
-		
+
 		p->colupd++;
 
 		debugr2((errout,"dispwin_set_color about to paint color %f %f %f\n",
@@ -4199,7 +4201,7 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 
 /*
 	replacement ?
-	IOPMAssertionID assertionID; 
+	IOPMAssertionID assertionID;
 	IOPMAssertionDeclareUserActivity(CFSTR(""), kIOPMUserActiveLocal, &assertionID);
 */
 
@@ -4283,7 +4285,7 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 		sprintf(cmd, "%s %d %d %d %f %f %f",p->callout,
 			        (int)(r * 255.0 + 0.5),(int)(g * 255.0 + 0.5),(int)(b * 255.0 + 0.5), r, g, b);
 		if ((rv = system(cmd)) != 0)
-			warning("System command '%s' failed with %d",cmd,rv); 
+			warning("System command '%s' failed with %d",cmd,rv);
 		free(cmd);
 	}
 
@@ -4408,7 +4410,7 @@ dispwin *p
 		} else {
 			debugr2((errout, "PostMessage(WM_GETICON failed, lasterr = %d\n",GetLastError()));
 		}
-//		DestroyCursor(p->curs); 
+//		DestroyCursor(p->curs);
 
 		if (p->mth != NULL) {			/* Message thread */
 			p->mth->del(p->mth);
@@ -4455,7 +4457,7 @@ dispwin *p
 
 	if (p->mydisplay != NULL) {
 		if (p->nowin == 0) {	/* We have a window up */
-	
+
 			if (p->mygc != 0)
 				XFreeGC(p->mydisplay, p->mygc);
 			if (p->mywindow != 0)
@@ -4624,12 +4626,12 @@ static LRESULT CALLBACK MainWndProc(
 			debugrr2l(4,(stderr, "It's a windowposchanged, flags = 0x%x\n",wpos->flags));
 			return 0;
 		}
-		case WM_CLOSE: 
+		case WM_CLOSE:
 			DestroyWindow(hwnd);
-			return 0; 
- 
-		case WM_DESTROY: 
-		    PostQuitMessage(0); 
+			return 0;
+
+		case WM_DESTROY:
+		    PostQuitMessage(0);
 			return 0;
 	}
 
@@ -4692,7 +4694,7 @@ int win_message_thread(void *pp) {
 //				0,
 		p->AppName,
 		"Argyll Display Calibration Window",
-		WS_VISIBLE | WS_DISABLED | WS_POPUP, 
+		WS_VISIBLE | WS_DISABLED | WS_POPUP,
 //		WS_EX_TOPMOST
 //		WS_EX_PALETTEWINDOW
 //		WS_OVERLAPPEDWINDOW | WS_VISIBLE
@@ -4785,7 +4787,7 @@ void dispwin_set_default_delays(dispwin *p) {
 	p->inst_reaction = INSTRUMENT_REACTIONTIME;		/* Default inst delay */
 	p->rise_time = DISPLAY_RISE_TIME;
 	p->fall_time = DISPLAY_FALL_TIME;
-	p->de_aim = DISPLAY_SETTLE_AIM; 
+	p->de_aim = DISPLAY_SETTLE_AIM;
 
 	p->do_resp_time_del = 1;		/* Default this to on */
 	p->do_update_del = 1;			/* Default this to on */
@@ -4812,7 +4814,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 	dispwin *p = NULL;
 
 #ifndef DEBUG
-	if (ddebug) 
+	if (ddebug)
 #endif
 	fprintf(errout, "new_dispwin called\n");
 
@@ -4869,9 +4871,9 @@ int ddebug						/* >0 to print debug statements to stderr */
 		int wi, he;					/* Width and height of window in pixels */
 		int xo, yo;					/* Window location in pixels */
 		int bpp;
-		
+
 		p->AppName = "Argyll Test Window";
-		
+
 		debugr2((errout, "new_dispwin: About to open display '%s'\n",disp->name));
 
 		/* Get device context to main display */
@@ -5061,8 +5063,8 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 		/* Get CGDisplayGammaTable size */
 		p->nent = CGDisplayGammaTableCapacity(p->ddid);
-		
-		/* Compute GammaTable/VideoLUT/RAMDAC depth */ 
+
+		/* Compute GammaTable/VideoLUT/RAMDAC depth */
 		{
 			for (p->ndepth = 1; p->ndepth < 17; p->ndepth++) {
 				if ((1 << p->ndepth) >= p->nent)
@@ -5228,7 +5230,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 		int disp_hrz, disp_vrz;		/* Display horizontal/vertical resolution in pixels (virtual screen) */
 		int wi, he;				/* Width and height of window in pixels */
 		int xo, yo;				/* Window location in pixels */
-	
+
 		/* Create the base display name (in case of Xinerama, XRandR) */
 		if ((bname = strdup(disp->name)) == NULL) {
 			debugr2((errout,"new_dispwin: Malloc failed\n"));
@@ -5289,8 +5291,8 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 		/* To test DirectColor Visual when it's not the default:*/
 		debugr2((errout,"new_dispwin: Testing DirectColor Visual\n"));
-		
-		// test DirectColor visual 	
+
+		// test DirectColor visual
 		template.class = DirectColor;
 		if ((vinfo = XGetVisualInfo(p->mydisplay, VisualClassMask, &template, &nitems)) == NULL) {
 			debugr2((errout,"new_dispwin: Unable to find a DirectColor Visual\n"));
@@ -5308,7 +5310,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 		/* Get the VisualInfo */
 		template.visualid = myvisual->visualid;
-		vinfo = XGetVisualInfo(p->mydisplay, VisualIDMask, &template, &nitems); 
+		vinfo = XGetVisualInfo(p->mydisplay, VisualIDMask, &template, &nitems);
 
 		if (nitems < 1) {
 			debugr2((errout,"new_dispwin: Failed to get XGetVisualInfo of defalt Visual\n"));
@@ -5352,10 +5354,10 @@ int ddebug						/* >0 to print debug statements to stderr */
 				return NULL;
 			}
 
-			for (p->shift[0] = 0, bit = 1; (bit & vinfo->red_mask) == 0; p->shift[0]++, bit <<= 1) 
+			for (p->shift[0] = 0, bit = 1; (bit & vinfo->red_mask) == 0; p->shift[0]++, bit <<= 1)
 				;
 
-			for (depth = 0; (bit & vinfo->red_mask) != 0; depth++, bit <<= 1) 
+			for (depth = 0; (bit & vinfo->red_mask) != 0; depth++, bit <<= 1)
 				;
 
 			if (depth != p->fdepth) {
@@ -5365,10 +5367,10 @@ int ddebug						/* >0 to print debug statements to stderr */
 				return NULL;
 			}
 
-			for (p->shift[1] = 0, bit = 1; (bit & vinfo->green_mask) == 0; p->shift[1]++, bit <<= 1) 
+			for (p->shift[1] = 0, bit = 1; (bit & vinfo->green_mask) == 0; p->shift[1]++, bit <<= 1)
 				;
 
-			for (depth = 0; (bit & vinfo->green_mask) != 0; depth++, bit <<= 1) 
+			for (depth = 0; (bit & vinfo->green_mask) != 0; depth++, bit <<= 1)
 				;
 
 			if (depth != p->fdepth) {
@@ -5378,10 +5380,10 @@ int ddebug						/* >0 to print debug statements to stderr */
 				return NULL;
 			}
 
-			for (p->shift[2] = 0, bit = 1; (bit & vinfo->blue_mask) == 0; p->shift[2]++, bit <<= 1) 
+			for (p->shift[2] = 0, bit = 1; (bit & vinfo->blue_mask) == 0; p->shift[2]++, bit <<= 1)
 				;
 
-			for (depth = 0; (bit & vinfo->blue_mask) != 0; depth++, bit <<= 1) 
+			for (depth = 0; (bit & vinfo->blue_mask) != 0; depth++, bit <<= 1)
 				;
 
 			if (depth != p->fdepth) {
@@ -5395,7 +5397,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 		/* Check the VideoLUT depth */
 #if RANDR_MAJOR == 1 && RANDR_MINOR >= 2 && !defined(DISABLE_RANDR)
 		if (p->crtc != 0) {		/* Using Xrandr 1.2 */
-	
+
 			if ((p->nent = XRRGetCrtcGammaSize(p->mydisplay, p->crtc)) <= 0) {
 				p->nent = 0;
 			}
@@ -5406,7 +5408,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 			if (XF86VidModeQueryExtension(p->mydisplay, &evb, &erb) != 0) {
 				int nent = -1;
-			
+
 				/* Some propietary multi-screen drivers (ie. TwinView & MergedFB) */
 				/* don't implement the XVidMode extenstion properly. */
 				if (XSetErrorHandler(null_error_handler) == 0) {
@@ -5439,13 +5441,13 @@ int ddebug						/* >0 to print debug statements to stderr */
 				dispwin_del(p);
 				return NULL;
 			}
-	
+
 			/* Compute actual ramdac depth */
 			for (p->ndepth = 1; p->ndepth < 17; p->ndepth++) {
 				if ((1 << p->ndepth) >= p->nent)
 					break;
 			}
-	
+
 			if (p->nent != (1 << p->rdepth)) {
 				if (!p->warned) {
 					warning("new_dispwin: Expected VideoLUT depth %d doesn't match actual %d",p->rdepth, p->ndepth);
@@ -5466,7 +5468,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 			myforeground = BlackPixel(p->mydisplay, p->myscreen);
 			mybackground = BlackPixel(p->mydisplay, p->myscreen);
-		
+
 			/* Get device context to main display */
 			disp_hsz = DisplayWidthMM(p->mydisplay, p->myscreen);
 			disp_vsz = DisplayHeightMM(p->mydisplay, p->myscreen);
@@ -5509,7 +5511,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 			mysizehints.y = yo;
 			mysizehints.width = wi;
 			mysizehints.height = he;
-		
+
 			/* Setup Window Manager Hints */
 			mywmhints.flags = InputHint | StateHint;
 			mywmhints.input = 0;
@@ -5533,7 +5535,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 				Colormap mycmap = None;
 				XColor *colors;
 				int ncolors = (1 << p->fdepth), i;
-				
+
 				debugr2((errout,"new_dispwin: setting DirectColor colormap\n"));
 
 				if ((mycmap = XCreateColormap(p->mydisplay, rootwindow, myvisual, AllocAll)) == None) {
@@ -5542,7 +5544,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 					dispwin_del(p);
 					return NULL;
 				}
-	
+
 				if ((colors = malloc(sizeof(XColor) * ncolors)) == NULL) {
 					debugr2((errout,"new_dispwin: Malloc failed for XColors\n"));
 					XFree(vinfo);
@@ -5552,11 +5554,11 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 				/* Set a linear mapping */
 				for (i = 0; i < ncolors; i++) {
-					colors[i].pixel = i << p->shift[0] | i << p->shift[1] | i << p->shift[2]; 
-					colors[i].red = 
-					colors[i].green = 
+					colors[i].pixel = i << p->shift[0] | i << p->shift[1] | i << p->shift[2];
+					colors[i].red =
+					colors[i].green =
 					colors[i].blue = (unsigned short) (65535.0 * i/(ncolors-1.0) + 0.5);
-					colors[i].flags = DoRed | DoGreen | DoBlue; 
+					colors[i].flags = DoRed | DoGreen | DoBlue;
 				}
 
 				if (!XStoreColors(p->mydisplay, mycmap, colors, ncolors)) {
@@ -5612,7 +5614,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 				&mysizehints,
 				&mywmhints,
 				NULL);					/* No class hints */
-		
+
 			// ~1 should free myappname, but there doesn't seem to be
 			// a XFreeXTextProperty(&myappname); ???
 
@@ -5645,7 +5647,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 			p->mygc = XCreateGC(p->mydisplay,p->mywindow,0,0);
 			XSetBackground(p->mydisplay,p->mygc,mybackground);
 			XSetForeground(p->mydisplay,p->mygc,myforeground);
-			
+
 			/* Create an invisible cursor over our window */
 			{
 				Cursor mycursor;
@@ -5658,16 +5660,16 @@ int ddebug						/* >0 to print debug statements to stderr */
 
 				mycmap = DefaultColormap(p->mydisplay, p->myscreen);
 				XAllocColor(p->mydisplay, mycmap, &col);
-				mypixmap = XCreatePixmapFromBitmapData(p->mydisplay, p->mywindow, pmdata, 1, 1, 0, 0, 1); 
+				mypixmap = XCreatePixmapFromBitmapData(p->mydisplay, p->mywindow, pmdata, 1, 1, 0, 0, 1);
 				mycursor = XCreatePixmapCursor(p->mydisplay, mypixmap, mypixmap, &col, &col, 0,0);
 				XDefineCursor(p->mydisplay, p->mywindow, mycursor);
 			}
 
 			XSelectInput(p->mydisplay,p->mywindow, ExposureMask);
-		
+
 			debugr2((errout,"new_dispwin about to raise window\n"));
 			XMapRaised(p->mydisplay,p->mywindow);
-		
+
 			/* ------------------------------------------------------- */
 			/* Suspend any screensavers if we can */
 
@@ -5721,14 +5723,14 @@ int ddebug						/* >0 to print debug statements to stderr */
 						freopen("/dev/null", "r", stdin);
 						freopen("/dev/null", "a", stdout);		/* Hide output */
 						freopen("/dev/null", "a", stderr);
-						execlp("gnome-screensaver-command", "gnome-screensaver-command","-i","-n","argyll","-r","measuring screen",NULL); 
- 
+						execlp("gnome-screensaver-command", "gnome-screensaver-command","-i","-n","argyll","-r","measuring screen",NULL);
+
 						_exit(0);
 					}
 					sigprocmask(SIG_SETMASK, &osm, NULL);		/* restore the signals */
 				}
 			}
-		
+
 			/* kscreensaver > 3.5.9 obeys XResetScreenSaver(), but earlier versions don't. */
 			/* Disable any KDE screen saver if it's active */
 			if (p->kdessrunning == 0) {
@@ -5753,7 +5755,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 						DPMSDisable(p->mydisplay);
 				}
 			}
-		
+
 			/* Deal with any pending events */
 			debugr("About to enter main loop\n");
 			while(XPending(p->mydisplay) > 0) {
@@ -5783,7 +5785,7 @@ int ddebug						/* >0 to print debug statements to stderr */
 			mycmap = mywa.colormap;
 			ncolors = (1 << p->fdepth);
 
-			for (i = 0; i < 3; i++) { 
+			for (i = 0; i < 3; i++) {
 				if ((p->rmap[i] = malloc(sizeof(int) * ncolors)) == NULL) {
 					debugr2((errout,"new_dispwin: Malloc failed for rmap[%d]\n",i));
 					XFree(vinfo);
@@ -5808,11 +5810,11 @@ int ddebug						/* >0 to print debug statements to stderr */
 				}
 
 				for (i = 0; i < ncolors; i++) {
-					colors[i].pixel = i << p->shift[0] | i << p->shift[1] | i << p->shift[2]; 
-					colors[i].flags = DoRed | DoGreen | DoBlue; 
+					colors[i].pixel = i << p->shift[0] | i << p->shift[1] | i << p->shift[2];
+					colors[i].flags = DoRed | DoGreen | DoBlue;
 				}
 
-				if (!XQueryColors(p->mydisplay, mycmap, colors, ncolors)) { 
+				if (!XQueryColors(p->mydisplay, mycmap, colors, ncolors)) {
 					debugr2((errout,"new_dispwin: DirectColor XQueryColors failed\n"));
 					free(colors);
 					XFree(vinfo);
@@ -6017,8 +6019,8 @@ int x11_load_all(disppath *disp, int verb, int ddebug) {
 				} else if (wo->u.table.channels == 1) {
 					for (j = 0; j < r->nent; j++) {
 						iv = j/(r->nent-1.0);
-						r->v[0][j] = 
-						r->v[1][j] = 
+						r->v[0][j] =
+						r->v[1][j] =
 						r->v[2][j] = wo->lookup(wo, 0, iv);
 					}
 					debug("Got monochrome vcgt calibration\n");
@@ -6066,7 +6068,7 @@ int x11_daemon_mode(disppath *disp, int verb, int ddebug) {
 	int evb = 0, erb = 0;
 	int dopoll = 1;				/* Until XRandR is fixed */
 	XEvent myevent;
-	int update_profiles = 1;	/* Do it on entry */ 
+	int update_profiles = 1;	/* Do it on entry */
 
 	/* Open the base display */
 	strncpy(dnbuf,disp->name,99); dnbuf[99] = '\000';
@@ -6126,9 +6128,9 @@ int x11_daemon_mode(disppath *disp, int verb, int ddebug) {
 			if (update_profiles == 0) {
 				if (dopoll) {
 					for (;;) {
-						if (minv >= 3 && _XRRGetScreenResourcesCurrent != NULL) { 
+						if (minv >= 3 && _XRRGetScreenResourcesCurrent != NULL) {
 							_XRRGetScreenResourcesCurrent(mydisplay, RootWindow(mydisplay,0));
-				
+
 						} else {
 							XRRGetScreenResources(mydisplay, RootWindow(mydisplay,0));
 						}
@@ -6141,15 +6143,15 @@ int x11_daemon_mode(disppath *disp, int verb, int ddebug) {
 					XPeekEvent(mydisplay, &myevent);
 				}
 			}
-	
+
 			/* Get all our events until we run out */
 			while (XPending(mydisplay) > 0) {
 				XNextEvent(mydisplay, &myevent);
 				if (myevent.type == evb + RRScreenChangeNotify) {
 //					printf("~1 Got RRScreenChangeNotify\n");
-					update_profiles = 1; 
+					update_profiles = 1;
 				} else if (myevent.type == evb + RRNotify) {
-					update_profiles = 1; 
+					update_profiles = 1;
 					XRRNotifyEvent *rrne = (XRRNotifyEvent *)(&myevent);
 					if (rrne->subtype == RRNotify_CrtcChange) {
 //						printf("~1 Got RRCrtcChangeNotify\n");
@@ -6188,7 +6190,7 @@ int x11_daemon_mode(disppath *disp, int verb, int ddebug) {
 						if (dp[i] == NULL)
 							break;
 						if (verb) printf("Updating display %d = '%s'\n",i+1,dp[i]->description);
-		
+
 						if ((dw = new_dispwin(dp[i], 0.0, 0.0, 0.0, 0.0, 1, 0, NULL, NULL, 0, 0, 0, ddebug)) == NULL) {
 							if (verb) printf("Failed to access screen %d of display '%s'\n",i+1,dnbuf);
 							continue;
@@ -6244,8 +6246,8 @@ int x11_daemon_mode(disppath *disp, int verb, int ddebug) {
 							} else if (wo->u.table.channels == 1) {
 								for (j = 0; j < r->nent; j++) {
 									iv = j/(r->nent-1.0);
-									r->v[0][j] = 
-									r->v[1][j] = 
+									r->v[0][j] =
+									r->v[1][j] =
 									r->v[2][j] = wo->lookup(wo, 0, iv);
 								}
 								debug("Got monochrom vcgt calibration\n");
@@ -6329,7 +6331,7 @@ static void usage(int flag, char *diag, ...) {
 #if defined(UNIX_X11)
 	fprintf(stderr," -display displayname Choose X11 display name\n");
 	fprintf(stderr," -d n[,m]             Choose the display n from the following list (default 1)\n");
-	fprintf(stderr,"                      Optionally choose different display m for Video LUT access\n"); 
+	fprintf(stderr,"                      Optionally choose different display m for Video LUT access\n");
 #else
 	fprintf(stderr," -d n                 Choose the display from the following list (default 1)\n");
 #endif
@@ -6417,7 +6419,7 @@ static void usage(int flag, char *diag, ...) {
 /* generates number between 1 and 4294967295 */
 #define PSRAND32(S) (((S) & 0x80000000) ? (((S) << 1) ^ 0xa398655d) : ((S) << 1))
 
-int 
+int
 main(int argc, char *argv[]) {
 	int fa, nfa, mfa;			/* current argument we're looking at */
 	int verb = 0;				/* Verbose flag */
@@ -6780,7 +6782,7 @@ main(int argc, char *argv[]) {
 			printf("Error - chosen ChromeCasts (%d) is outside list (1..%d)\n",ccdisp,i);
 			return -1;
 		}
-		
+
 		if ((dw = new_ccwin(ids[ccdisp-1], 100.0 * hpatscale, 100.0 * vpatscale,
 			                   ho, vo, nowin, native, &noramdac, &nocm, out_tvenc,
 			                   fullscreen, 0, verb, ddebug)) == NULL) {
@@ -6796,7 +6798,7 @@ main(int argc, char *argv[]) {
 			printf("Error - Set TV encodfing in MadVR\n");
 			return -1;
 		}
-			
+
 		if ((dw = new_madvrwin(100.0 * hpatscale, 100.0 * vpatscale, ho, vo, nowin, native,
 			                   &noramdac, &nocm, out_tvenc, fullscreen, verb, ddebug)) == NULL) {
 			printf("Error - new_madvrwin failed! (Is it running and up to date?)\n");
@@ -6820,7 +6822,7 @@ main(int argc, char *argv[]) {
 
 	if ((native & 1) != 0 && noramdac) {
 		warning("Unable to access to VideoLUTs so can't be sure colors are native");
-	} 
+	}
 
 	/* Save the current Video LUT to the calfile */
 	if (sname[0] != '\000') {
@@ -6830,7 +6832,7 @@ main(int argc, char *argv[]) {
 		char *atm = asctime(tsp);	/* Ascii time */
 		cgats_set_elem *setel;		/* Array of set value elements */
 		int nsetel = 0;
-		
+
 		if (verb)
 			printf("About to save current loaded calibration to file '%s'\n",sname);
 
@@ -6886,7 +6888,7 @@ main(int argc, char *argv[]) {
 	/* Clear the display calibration curve */
 	if (clear != 0) {
 		int rv;
-		
+
 		if (dw->or == NULL)
 			error("We don't have access to the VideoLUT for clearing");
 
@@ -6929,7 +6931,7 @@ main(int argc, char *argv[]) {
 		icmFile *rd_fp = NULL;
 		icc *icco = NULL;
 		cgats *ccg = NULL;			/* calibration cgats structure */
-		
+
 		if (dw->r == NULL)
 			error("We don't have access to the VideoLUT for loading");
 
@@ -6937,7 +6939,7 @@ main(int argc, char *argv[]) {
 		if (loadprofile) {
 			if (calname[0] != '\000')
 				warning("Profile '%s' provided as argument is being ignored!",calname);
-				
+
 			/* Get the current displays profile */
 			debug2((errout,"Loading calibration from display profile '%s'\n",dw->name));
 			if ((rd_fp = dw->get_profile(dw, calname, MAXNAMEL)) == NULL)
@@ -6969,7 +6971,7 @@ main(int argc, char *argv[]) {
 					dw->r->v[2][i] = iv;
 				}
 			} else {
-				
+
 				if (wo->u.table.channels == 3) {
 					for (i = 0; i < dw->r->nent; i++) {
 						iv = i/(dw->r->nent-1.0);
@@ -6982,8 +6984,8 @@ main(int argc, char *argv[]) {
 				} else if (wo->u.table.channels == 1) {
 					for (i = 0; i < dw->r->nent; i++) {
 						iv = i/(dw->r->nent-1.0);
-						dw->r->v[0][i] = 
-						dw->r->v[1][i] = 
+						dw->r->v[0][i] =
+						dw->r->v[1][i] =
 						dw->r->v[2][i] = wo->lookup(wo, 0, iv);
 					}
 					debug("Got monochrom vcgt calibration\n");
@@ -6997,7 +6999,7 @@ main(int argc, char *argv[]) {
 			int ii, fi, ri, gi, bi;
 			double cal[3][MAX_CAL_ENT];
 			int out_tvenc = 0;			/* nz to use (16-235)/255 video encoding */
-			
+
 			icco->del(icco);			/* Don't need these now */
 			icco = NULL;
 			rd_fp->del(rd_fp);
@@ -7005,23 +7007,23 @@ main(int argc, char *argv[]) {
 
 			ccg = new_cgats();			/* Create a CGATS structure */
 			ccg->add_other(ccg, "CAL"); /* our special calibration type */
-		
+
 			if (ccg->read_name(ccg, calname)) {
 				ccg->del(ccg);
 				error("File '%s' is not a valid ICC profile or Argyll .cal file",calname);
 			}
-		
+
 			if (ccg->ntables == 0 || ccg->t[0].tt != tt_other || ccg->t[0].oi != 0)
 				error("Calibration file isn't a CAL format file");
 			if (ccg->ntables < 1)
 				error("Calibration file '%s' doesn't contain at least one table",calname);
-		
+
 			if ((ncal = ccg->t[0].nsets) <= 0)
 				error("No data in set of file '%s'",calname);
-		
+
 			if (ncal < 2 || ncal > MAX_CAL_ENT)
 				error("Data set size %d is out of range for '%s'",ncal,calname);
-		
+
 			if ((fi = ccg->find_kword(ccg, 0, "DEVICE_CLASS")) < 0)
 				error("Calibration file '%s' doesn't contain keyword COLOR_REP",calname);
 			if (strcmp(ccg->t[0].kdata[fi],"DISPLAY") != 0)
@@ -7059,7 +7061,7 @@ main(int argc, char *argv[]) {
 			for (i = 0; i < dw->r->nent; i++) {
 				double val, w;
 				unsigned int ix;
-	
+
 				val = (ncal-1.0) * i/(dw->r->nent-1.0);
 				ix = (unsigned int)floor(val);		/* Coordinate */
 				if (ix > (ncal-2))
@@ -7087,7 +7089,7 @@ main(int argc, char *argv[]) {
 					/* account for this. */
 					if (dw->edepth > 8)
 						dw->r->v[j][i] = (dw->r->v[j][i] * 255 * (1 << (dw->edepth - 8)))
-			                       /((1 << dw->edepth) - 1.0); 	
+			                       /((1 << dw->edepth) - 1.0);
 				}
 			}
 		}
@@ -7150,7 +7152,7 @@ main(int argc, char *argv[]) {
 
 		if (dw->oor == NULL)
 			error("Unable to get original VideoLUT for verify");
-	
+
 		if (dw->r == NULL)
 			error("No calibration to verify against");
 
@@ -7197,7 +7199,7 @@ main(int argc, char *argv[]) {
 				int i, npat;
 				int ri, gi, bi;
 				int si = -1;
-				
+
 				if ((icg = new_cgats()) == NULL)
 					error("new_cgats() failed\n");
 				icg->add_other(icg, "");		/* Allow any signature file */
@@ -7233,7 +7235,7 @@ main(int argc, char *argv[]) {
 
 					if (inf == 2) {
 						printf("\nHit return to start\n");
-						getchar();				
+						getchar();
 					}
 				for (i = 0; i < npat; i++) {
 					double r, g, b;
@@ -7246,13 +7248,13 @@ main(int argc, char *argv[]) {
 					else
 						printf("Patch no %d",i+1);
 					printf(" color %f %f %f\n",r,g,b);
-				
-					if (dw->set_color(dw, r, g, b) != 0) {	
+
+					if (dw->set_color(dw, r, g, b) != 0) {
 						error ("set_color failed");
 					}
 
 					if (inf == 2)
-						getchar();				
+						getchar();
 					else
 						sleep(2);
 				}
@@ -7262,13 +7264,13 @@ main(int argc, char *argv[]) {
 			} else if (nmrgb > 0) {
 				int i;
 				int ri, gi, bi;
-				
+
 				if (inf == 2)
 					printf("\nHit return to advance each color\n");
 
 					if (inf == 2) {
 						printf("\nHit return to start\n");
-						getchar();				
+						getchar();
 					}
 				for (i = 0; i < nmrgb; i++) {
 					double r, g, b;
@@ -7278,13 +7280,13 @@ main(int argc, char *argv[]) {
 
 					printf("Patch no %d",i+1);
 					printf(" color %f %f %f\n",r,g,b);
-				
-					if (dw->set_color(dw, r, g, b) != 0) {	
+
+					if (dw->set_color(dw, r, g, b) != 0) {
 						error ("set_color failed");
 					}
 
 					if (inf == 2)
-						getchar();				
+						getchar();
 					else
 						sleep(2);
 				}
@@ -7299,7 +7301,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 1.0, 1.0, 1.0);	/* White */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7307,7 +7309,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.75, 0.75, 0.75);	/* Grey */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7315,7 +7317,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.5, 0.5, 0.5);	/* Grey */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7323,7 +7325,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.25, 0.25, 0.25);	/* Grey */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7331,7 +7333,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.125, 0.125, 0.125);	/* Grey */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7339,7 +7341,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.0, 0.0, 0.0);
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7347,7 +7349,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 1.0, 0.0, 0.0);	/* Red */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7355,7 +7357,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.0, 1.0,  0.0);	/* Green */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7363,7 +7365,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.0, 0.0, 1.0);	/* Blue */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7371,7 +7373,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.0, 1.0, 1.0);	/* Cyan */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7379,7 +7381,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 1.0, 0.0,  1.0);	/* Magenta */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7387,7 +7389,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 1.0, 1.0, 0.0);	/* Yellow */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7395,7 +7397,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.5, 0.0, 0.0);	/* Red */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7403,7 +7405,7 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.0, 0.5,  0.0);	/* Green */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
@@ -7411,27 +7413,27 @@ main(int argc, char *argv[]) {
 				dw->set_color(dw, 0.0, 0.0, 0.5);	/* Blue */
 
 				if (inf == 2)
-					getchar();				
+					getchar();
 				else
 					sleep(2);
 
 				if (inf == 1) {
 					for (;inf != 0;) {
 						double col[3];
-	
+
 						for (i = 0; i < 3; i++) {
 							seed = PSRAND32(seed);
 							col[i] = seed/4294967295.0;
 						}
-	
+
 						printf("Setting %f %f %f\n",col[0],col[1],col[2]);
 						dw->set_color(dw, col[0],col[1],col[2]);
-	
+
 						if (inf == 2)
 							getchar();
 						else
 							sleep(2);
-	
+
 					}
 				}
 			}
@@ -7440,7 +7442,7 @@ main(int argc, char *argv[]) {
 		if (inf != 2) {
 			/* Test out the VideoLUT access */
 			if (dw->r != NULL) {	/* Working ramdac to use */
-				
+
 				/* Try darkening it */
 				for (j = 0; j < 3; j++) {
 					for (i = 0; i < dw->r->nent; i++) {
@@ -7453,7 +7455,7 @@ main(int argc, char *argv[]) {
 					error("Failed to set VideoLUTs");
 				}
 				sleep(1);
-	
+
 				/* Try lightening it */
 				for (j = 0; j < 3; j++) {
 					for (i = 0; i < dw->r->nent; i++) {
@@ -7466,35 +7468,35 @@ main(int argc, char *argv[]) {
 					error("Failed to set VideoLUTs");
 				}
 				sleep(1);
-	
+
 				/* restor it */
 				printf("Restoring screen\n");
 				if (dw->set_ramdac(dw,dw->or,0)) {
 					error("Failed to set VideoLUTs");
 				}
-	
+
 			} else {
 				printf("We don't have access to the VideoLUT\n");
 			}
-	
+
 			/* Test out the beeps */
 			printf("Normal beep\n");
 			normal_beep();
-	
+
 			sleep(1);
-		
+
 			printf("Good beep\n");
 			good_beep();
-	
+
 			sleep(1);
-		
+
 			printf("Bad double beep\n");
 			bad_beep();
-	
+
 			sleep(2);		/* Allow beep to complete */
 		}
 	}
-	
+
 	if (disp != NULL)
 		free_a_disppath(disp);
 
@@ -7545,7 +7547,7 @@ End Class
 		CFIndex nde, j;
 		CFDictionaryRef dr;
 		void **keys, **values;
-		
+
 		dr = CGDisplayCurrentMode(dids[i]);
 		nde = CFDictionaryGetCount(dr);
 
@@ -7588,7 +7590,7 @@ struct idp_rec {
 OSErr ItDevProfProc (
 const CMDeviceInfo *di,
 const NCMDeviceProfileInfo *pi,
-void *refCon) 
+void *refCon)
 {
 	CMError ev;
 	struct idp_rec *r = (struct idp_rec *)refCon;
@@ -7621,7 +7623,7 @@ struct idp_rec {
 OSErr ItDevProfProc (
 const CMDeviceInfo *di,
 const NCMDeviceProfileInfo *pi,
-void *refCon) 
+void *refCon)
 {
 	CMError ev;
 	struct idp_rec *r = (struct idp_rec *)refCon;
@@ -7655,7 +7657,7 @@ static char *plocpath(CMProfileLocation *ploc) {
 			if ((stus = FSRefMakePath(&newRef, path, 256)) == 0 || stus == fnfErr) {
 				return path;
 			}
-		} 
+		}
 		return strdup(path);
 	} else if (ploc->locType == cmPathBasedProfile) {
 		return strdup(ploc->u.pathLoc.path);
@@ -7690,7 +7692,7 @@ static char *fss2path(FSSpec *fss) {
 		FSRefParam pb;
 		int tl;
 		char *tpath;
-		
+
 		memmove(&tfss, fss, sizeof(FSSpec));		/* Copy so we can modify */
 		memset(&pb, 0, sizeof(FSRefParam));
 		pb.ioNamePtr = tfss.name;
@@ -7698,7 +7700,7 @@ static char *fss2path(FSSpec *fss) {
 		pb.ioDrParID = tfss.parID;
 		do {
 			pb.ioFDirIndex = -1;	/* get parent directory name */
-			pb.ioDrDirID = pb.dirInfo.ioDrParID;	
+			pb.ioDrDirID = pb.dirInfo.ioDrParID;
 			if(PBGetCatlogInfoSync(&pb) != noErr) {
 				free(path);
 				return NULL;
@@ -7821,7 +7823,7 @@ static void pcurpath(dispwin *p) {
 					printf("got match\n");
 				}
 			}
-		} 
+		}
 	} else if (pi->profileLoc.locType == cmPathBasedProfile) {
 		if (strcmp(r->fname, pi->profileLoc.u.pathLoc.path) == 0) {
 			r->id = pi->profileID;
@@ -7955,4 +7957,3 @@ static void pcurpath(dispwin *p) {
 //	return dpath;
 	return NULL;
 #endif
-

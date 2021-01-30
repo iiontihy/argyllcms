@@ -39,7 +39,7 @@
 #
 # all				- parent of first, shell, files, lib, exe
 # first				- first dependent of 'all', for potential initialization
-# shell				- parent of all Shell targets 
+# shell				- parent of all Shell targets
 # files				- parent of all File targets
 # lib				- parent of all Library targets
 # exe				- parent of all Main targets
@@ -47,13 +47,13 @@
 # install			- parent of all Install targets
 # clean				- removes all Shell, File, Library, and Main targets
 # uninstall			- removes all Install targets
-#		
+#
 
 # Rules defined by this file:
 #
 # As obj : source.s ;					.s -> .o
 # Bulk dir : files ;					populate directory with many files
-# Cc obj : src.c : flags : defines : hdrpaths 
+# Cc obj : src.c : flags : defines : hdrpaths
 #										.c -> .o
 # C++ obj : src.cc : flags : defines : hdrpaths
 #										.cc -> .o
@@ -71,7 +71,7 @@
 #                                       Same as GenFileNND but don't clean the target.
 # CatToFile dest : strings ;			save the arguments to the file
 # GuiBin image ;						Mark executable as GUI applications
-#                                       (Needs to go before other declarations of image) 
+#                                       (Needs to go before other declarations of image)
 # HardLink target : source ;			make link from source to target
 # HdrRule source : headers ;			handle #includes
 # InstallInto dir : sources ;			install any files
@@ -100,7 +100,7 @@
 # MkDir dir ;							make a directory, if not there
 # Mod target : mode ;					sets mode of file
 # NDepends dest : source ;				make Normalized dependency
-# NNoUpdate targ ;						create Normalized target if needed but never update it 
+# NNoUpdate targ ;						create Normalized target if needed but never update it
 # NIncludes dest : source ;				make Normalized co-dependency
 # Object object : sources : flags : defines : hdrpaths ; 	compile object from source
 # ObjectCcFlags objects : flags ;		add compiler flags for object
@@ -117,7 +117,7 @@
 # RmTemps target : sources ;			remove temp sources after target made
 # Setuid images ;						mark executables Setuid
 #	set SHLINKDEFFILE on for Windows to define exports using .def file.
-#	set SHLINKSEARCHEXEPATH true on UNIX/OSX to have applications search exeutable location for it 
+#	set SHLINKSEARCHEXEPATH true on UNIX/OSX to have applications search exeutable location for it
 # ShLibrary shlib : source ;				link shared library from compiled sources
 # ShLibraryFromObjects shlib : objects ;	link shared library from objects
 # ShLibraryLibraries shlib : libraries ;	add static libraries onto shared libraries link
@@ -129,11 +129,11 @@
 # Undefines images : symbols ;			save undef's for linking
 # UserObject object : source ;			handle unknown suffixes for Object
 # Yacc source.c : source.y ;			.y -> .c
-# Aswig : source.i ;					.i -> .h _i.c .hpp 
+# Aswig : source.i ;					.i -> .h _i.c .hpp
 #
 # Utility rules
 #
-# val = geton var : varname ;				return the value of varname on var 
+# val = geton var : varname ;				return the value of varname on var
 # paths = NormPaths paths [ : dir ] ;		normalize a set of paths relative to SUBDIR or dir
 # paths = NormSrcPaths paths [ : dir ] ;	NormPaths with SRCDIR
 # paths = NormDstPaths paths [ : dir ] ;	NormPaths with DSTDIR
@@ -146,7 +146,7 @@
 #
 # FAppendSuffix f1 f2 ... : $(SUF) ;	return $(<) with suffixes if no current suffixes
 # FStripCommon v1 : v2 ;				strip common initial parts of v1 v2
-# FReverse a1 a2 ... ;					return ... a2 a1 
+# FReverse a1 a2 ... ;					return ... a2 a1
 # FDelEmpty a1 a2 ... ;					return a1 a2 ... with any empty elements deleted
 #
 # Variables:
@@ -182,7 +182,7 @@
 #
 # Parent-Jamfile build variables. These are the accumulated
 # values from any Parent Jamfiles, and will be added to any
-# Sub-Jamfile variables when a rule picks them up. 
+# Sub-Jamfile variables when a rule picks them up.
 # File/path variables will have been normalized.
 #
 # P_ASFLAGS      - Flags for the assembler.
@@ -217,7 +217,7 @@
 # Location variables:
 #
 # DSTDIR	- puts all products in a subdirectory of their nominated location.
-#             Useful for storing variants in their own areas.                 
+#             Useful for storing variants in their own areas.
 #
 # SRCDIR    - Looks for all sources and Jamfiles in an alternate top level source
 #             location. Useful for accessing a read only source repository, or
@@ -235,7 +235,7 @@
 #
 # The main change is to locate and identify targets using their nominated location in the
 # filesystem. This eliminates the need to create Grist, or manipulate SEARCH, LOCATE etc.
-# when setting up a herachy of Jamfiles. 
+# when setting up a herachy of Jamfiles.
 #
 # Whenever a path is provided as an argument to one of the public rules, its path is assumed
 # to be relative to the Jamfile that it is declared in. [ The NormPaths/NormTargets rules do this. ]
@@ -254,7 +254,7 @@
 # the Grist strings.  The actual location of the target can then be varied by
 # augmenting it's LOCATE and/or SEARCH variables.
 #
-# Any include file discovered by header scanning is searched for using the 
+# Any include file discovered by header scanning is searched for using the
 # search path that is expected to be used during compilation, and
 # its nominated location resolved this way. Any headers that are not
 # located this way or who's location isn't declared by another rule (the
@@ -270,7 +270,7 @@
 # Argyll Jambase internal implementation rules:
 
 # IDs = _TargetIDs targpaths ;				return target ID's (gristed) from normalized paths
-# path = DeNormTargs target ;				return the original path 
+# path = DeNormTargs target ;				return the original path
 # CopyTarget dest : source ; 				duplicate a targets on NOMLOC LOCATE SEARCH variables.
 # NotTargets vars ;							ensure variables aren't treated as LOCATE etc targets
 
@@ -281,10 +281,10 @@
 # paths = RatPaths paths ;					rationalize a set of paths
 # paths = RootPaths dir : paths ;			re-root a set of paths
 # targs = CreateIDstTargets targs : dir ;	create dest targets by locating targets in dir
-# paths1/paths = CatPaths path1 : paths ; 	concatenate paths separated by a / 
+# paths1/paths = CatPaths path1 : paths ; 	concatenate paths separated by a /
 # found = FindToRoot starting_dir : file ;	Try and locate file from directory up to root.
 
-# FindTop ;		# Look for a default project file 
+# FindTop ;		# Look for a default project file
 
 # DoInit ;									Do subdir initialization (done by JAMBASE)
 
@@ -344,7 +344,7 @@
 #		Exit - blurt out targets and exit
 #		Includes - marks sources as headers for target (a codependency)
 #		NoCare - don't panic if the target can't be built
-#		NoUpdate - create the target if needed but never update it 
+#		NoUpdate - create the target if needed but never update it
 #		NotFile - ignore the timestamp of the target (it's not a file)
 #		Temporary - target need not be present if sources haven't changed
 #
@@ -410,13 +410,13 @@ if $(NT)
 		# We need to do something about adding -Wl,-subsystem,windows
 		# if WinMain is being used ? (it defaults to console)
 
-		MINGW           ?= $(MingW) ; 
+		MINGW           ?= $(MingW) ;
 		TPFX             = "" ;
 
 		if [ GLOB $(MINGW)/bin : x86_64-w64-mingw32-gcc.exe ] {
 			MINGW64 = $(MINGW) ;
         }
-		
+
 		# This doesn't work on a 32 bit system because we're cross
 		# compiling and need to create build system exe's
 		# (tiff/mkversion.exe, imdi/imdi_make.exe
@@ -425,18 +425,22 @@ if $(NT)
 		if $(MINGW64) {
 			ECHO "Compiler is MingW for 64 bit target" ;
 			TARGET64     = true ;
-			TPFX         = x86_64-w64-mingw32- ;
-			MINGW64_LIB32 = $(MINGW)/mingw/lib32 ;
+			# TPFX         = x86_64-w64-mingw32- ;
+			MINGW64_LIB32 = $(MINGW)/x86_64-w64-mingw32/lib ;
 		} else {
 			ECHO "Compiler is MingW for 32 bit target" ;
 		}
 
 
 		# Basic C/C++ tools
-		AR				?= $(TPFX)ar rusc ;
-		AS				?= $(TPFX)as ;
-		CC				?= $(TPFX)gcc ;
-		CCFLAGS			?= -DNT -mwin32 -pipe ;
+		#AR				?= $(TPFX)ar rusc ;
+		AR				?= ar rusc ;
+		#AS				?= $(TPFX)as ;
+		AS				?= as ;
+		#CC				?= $(TPFX)gcc ;
+		CC				?= gcc ;
+		CFLAGS			?= -DNT -mwin32 -pipe ;
+		CCFLAGS			?= $(CFLAGS) ;
 		C++				?= $(CC) ;
 		C++FLAGS		?= $(CCFLAGS) ;
 
@@ -448,13 +452,14 @@ if $(NT)
 		WINLIBS			?= -lshlwapi -lsetupapi -lole32 -lws2_32 -lpsapi -lversion ;
 		GUILIBS			?= -lgdi32 -lmscms ;
 
-		LINK			?= $(TPFX)g++ ;		# In case we link to C++ files
+		#LINK			?= $(TPFX)g++ ;		# In case we link to C++ files
+		LINK			?= g++ ;		# In case we link to C++ files
 		LINKFLAGS		?= -static ;
 		SHLINKFLAGS		?= ;
 		STDLIBS			?= -lm $(OLELIBS) $(WINLIBS) $(GUILIBS) ;
 		SHSTDLIBS		?= $(STDLIBS) ;
 
-		STDHDRS			?= $(MINGW)\\include ;	
+		STDHDRS			?= $(MINGW)\\include ;
 
 		# Not sure whether linker -mconsole or -mwindow are needed ??
 
@@ -462,7 +467,7 @@ if $(NT)
 		DEFFLAG			?= -D ;
 		UNDEFFLAG		?= -U ;
 		CCOPTFLAG		?= -O2 ;
-		if $(PROCESSOR_LEVEL) = 15 
+		if $(PROCESSOR_LEVEL) = 15
 		{	# -mtune seems faster than -march !!!
 #			CCOPTFLAG	+= -mtune=pentium4 ;
 #			CCOPTFLAG	+= -mtune=prescott ;
@@ -474,9 +479,9 @@ if $(NT)
 		CCDEBUGFLAG		?= -g ;				# default (TABS? DWARF2 ?) format
 		CCPROFFLAG		?= -pg ;
 		LINKDEBUGFLAG	?= -g ;
-		LINKPROFFLAG	?= -pg ; 
+		LINKPROFFLAG	?= -pg ;
 		LINKOPTFLAG		?= -s -O ;			# Affects creating .so's ??
-		LINKSTRIPFLAG	?= -s ;	
+		LINKSTRIPFLAG	?= -s ;
 
 		# Other tools
 		AWK				?= awk ;
@@ -497,7 +502,7 @@ if $(NT)
 # -fdump-tree-all'
 
 	}
-	else if $(MSVC)		# 
+	else if $(MSVC)		#
 	{
 		ECHO "Compiler is VC++ 16 bit" ;
 		AR				?= lib /nologo ;
@@ -507,44 +512,44 @@ if $(NT)
 		C++FLAGS		?= $(CCFLAGS) ;
 		LINK			?= $(CC) ;
 		LINKFLAGS		?= ;
-		STDLIBS			?= 
+		STDLIBS			?=
 							$(MSVC)\\lib\\mlibce.lib
 							$(MSVC)\\lib\\oldnames.lib
 							;
 		NOARSCAN		?= true ;
 		STDHDRS			?= $(MSVC)\\include ;
-		DEFFLAG		 	?= /D ;						
+		DEFFLAG		 	?= /D ;
 		UNDEFFLAG		?= "/u _" ;
 	}
 	else if $(TARGET_ARCH)
 	{
-		# Intel C++ compiler (ICL) 
+		# Intel C++ compiler (ICL)
 
 		# No IA64 dir
 		local I ; I = "" ;
 
 		AR				?= lib /NOLOGO ;
 		AS				?= masm386 ;
-		CC              ?= icl /nologo ; 
+		CC              ?= icl /nologo ;
 		CCFLAGS			?= /DNT /MD ;		# DLL compatible build by default
 
 		C++				?= $(CC) ;
 		C++FLAGS		?= $(CCFLAGS) /GX ;		# GX enables syncronous exception handling
-		LINK			?= xilink /nologo ; 
+		LINK			?= xilink /nologo ;
 		LINKOUTFLAG		?= /out: ;
 		LINKFLAGS       ?= ; 		# iclvars.bat [arch] sets this up
 
 		SHLINKFLAGS		?= ;
 
-		STDLIBS			?= 
+		STDLIBS			?=
 						oldnames.lib
-						kernel32.lib 
-						advapi32.lib		
-						user32.lib		
-						mscms.lib		
-						gdi32.lib		 
-						shlwapi.lib		 
-						shell32.lib		 
+						kernel32.lib
+						advapi32.lib
+						user32.lib
+						mscms.lib
+						gdi32.lib
+						shlwapi.lib
+						shell32.lib
 						setupapi.lib
 						ole32.lib
 						oleaut32.lib
@@ -552,23 +557,23 @@ if $(NT)
 						Wbemuuid.lib
 						;
 		SHSTDLIBS		?= $(STDLIBS) ;
-		LINKFLAG		?= ;						
+		LINKFLAG		?= ;
 		STDHDRS			?= $(ICPP_COMPILER14)\\Include ;
-		DEFFLAG		 	?= /D ;				
+		DEFFLAG		 	?= /D ;
 		UNDEFFLAG		?= /U ;
-		CCOPTFLAG		?= /O2 ; 
+		CCOPTFLAG		?= /O2 ;
 
 		if $(MSVCVER) = 6 {
-			CCDEBUGFLAG		?= /Od /Z7 ;		# Include debugging into in each object		
+			CCDEBUGFLAG		?= /Od /Z7 ;		# Include debugging into in each object
 			CCPROFFLAG		?= /Od /Z7 ;
-			LINKDEBUGFLAG	?= /DEBUGTYPE:BOTH /DEBUG /PDB:NONE ;		
+			LINKDEBUGFLAG	?= /DEBUGTYPE:BOTH /DEBUG /PDB:NONE ;
 		} else {
 			CCDEBUGFLAG		?= /Od /Zi ;		# /Zi creates debugging database
 			CCPROFFLAG		?= /Od /Zi ;
 			LINKDEBUGFLAG	?= /DEBUG ;
 		}
-		LINKPROFFLAG	?= /PROFILE $(LINKDEBUGFLAG) ;		
-		LINKOPTFLAG		?= /OPT:REF ;	
+		LINKPROFFLAG	?= /PROFILE $(LINKDEBUGFLAG) ;
+		LINKOPTFLAG		?= /OPT:REF ;
 		LINKSTRIPFLAG	?= ;
 		YACC			?= bison -y ;
 		YACCGEN			?= .c ;
@@ -581,11 +586,11 @@ if $(NT)
 		# We assume VC++ Express + XP32 SDK has been setup
 
 		if $(VCINSTALLDIR) {
-			MSVCNT		?= $(VCINSTALLDIR) ;		
+			MSVCNT		?= $(VCINSTALLDIR) ;
 		} else if $(MSVCDir) {
-			MSVCNT		?= $(MSVCDir) ;		
+			MSVCNT		?= $(MSVCDir) ;
 		} else {			# Visual C++ 6.0 uses MSVCDIR
-			MSVCNT		?= $(MSVCDIR) ;		
+			MSVCNT		?= $(MSVCDIR) ;
 		}
 
 		if [ MATCH 16\\.(.*) : $(VisualStudioVersion) ] {
@@ -652,15 +657,15 @@ if $(NT)
 		LINKFLAGS		?= /STACK:16000000 /INCREMENTAL:NO /LIBPATH:$(MSNTSDK)\\lib\\$(I) ;
 		SHLINKFLAGS		?= ;
 
-		STDLIBS			?= 
+		STDLIBS			?=
 						oldnames.lib
-						kernel32.lib 
-						advapi32.lib		
-						user32.lib		
-						mscms.lib		
-						gdi32.lib		 
-						shlwapi.lib		 
-						shell32.lib		 
+						kernel32.lib
+						advapi32.lib
+						user32.lib
+						mscms.lib
+						gdi32.lib
+						shlwapi.lib
+						shell32.lib
 						setupapi.lib
 						ole32.lib
 						oleaut32.lib
@@ -674,22 +679,22 @@ if $(NT)
 		}
 
 		SHSTDLIBS		?= $(STDLIBS) ;
-		LINKFLAG		?= ;						
+		LINKFLAG		?= ;
 		STDHDRS			?= $(MSNTSDK)\\Include ;
-		DEFFLAG		 	?= /D ;				
+		DEFFLAG		 	?= /D ;
 		UNDEFFLAG		?= /U ;
 		CCOPTFLAG		?= /O2 ;		# MSVC9 doesn't understamd GB, G6 ?
 		if $(MSVCVER) = 6 {
-			CCDEBUGFLAG		?= /Od /Z7 ;		# Include debugging into in each object		
+			CCDEBUGFLAG		?= /Od /Z7 ;		# Include debugging into in each object
 			CCPROFFLAG		?= /Od /Z7 ;
-			LINKDEBUGFLAG	?= /DEBUGTYPE:BOTH /DEBUG /PDB:NONE ;		
+			LINKDEBUGFLAG	?= /DEBUGTYPE:BOTH /DEBUG /PDB:NONE ;
 		} else {
 			CCDEBUGFLAG		?= /Od /Zi ;		# /Zi creates debugging database
 			CCPROFFLAG		?= /Od /Zi ;
 			LINKDEBUGFLAG	?= /DEBUG ;
 		}
-		LINKPROFFLAG	?= /PROFILE $(LINKDEBUGFLAG) ;		
-		LINKOPTFLAG		?= /OPT:REF ;	
+		LINKPROFFLAG	?= /PROFILE $(LINKDEBUGFLAG) ;
+		LINKOPTFLAG		?= /OPT:REF ;
 		LINKSTRIPFLAG	?= ;
 		YACC			?= bison -y ;
 		YACCGEN			?= .c ;
@@ -705,7 +710,7 @@ if $(NT)
 else if $(OS2)
 {
 	WATCOM			?= $(watcom) ;
-	 
+
 	if ! $(WATCOM)
 	{
 		Exit On OS2, set WATCOM to the root of the Watcom directory. ;
@@ -732,7 +737,7 @@ else if $(OS2)
 	SUFSH			?= .bat ;
 	SUFLIB			?= .lib ;
 	SUFOBJ			?= .obj ;
-	DEFFLAG		 	?= /D ;				
+	DEFFLAG		 	?= /D ;
 	UNDEFFLAG		?= "/u _" ;
 
 }
@@ -765,7 +770,7 @@ else if $(VMS)
 	SUFLIB			?= .olb ;
 	SUFOBJ			?= .obj ;
 
-	switch $(OS) 
+	switch $(OS)
 	{
 		case OPENVMS : CCFLAGS ?= /stand=vaxc ;
 		case VMS	 : STDLIBS ?= sys$library:vaxcrtl.olb/lib ;
@@ -774,7 +779,7 @@ else if $(VMS)
 else if $(MAC)
 {
 	local OPT ;
-	
+
 	CW		?= "{CW}" ;
 
 	MACHDRS ?=
@@ -786,19 +791,19 @@ else if $(MAC)
 			"$(CW):MacOS Support:Universal:Libraries:StubLibraries:Interfacelib"
 			"$(CW):MacOS Support:Universal:Libraries:StubLibraries:Mathlib" ;
 
-	MPWLIBS ?= 
+	MPWLIBS ?=
 			"$(CW):MacOS Support:Libraries:Runtime:Libs:MSL_MPWCRuntime_PPC.lib"
 			"$(CW):MSL:MSL_C:MSL_MacOS:Lib:PPC:MSL_C_PPC_MPW.Lib" ;
 
-	MPWNLLIBS ?= 
+	MPWNLLIBS ?=
 			"$(CW):MacOS Support:Libraries:Runtime:Libs:MSL_MPWCRuntime_PPC.lib"
 			"$(CW):MSL:MSL_C:MSL_MacOS:Lib:PPC:MSL_C_PPC_MPW(NL).Lib" ;
-			
+
 	SIOUXHDRS ?= ;
-	
-	SIOUXLIBS ?= 
+
+	SIOUXLIBS ?=
 			"$(CW):MacOS Support:Libraries:Runtime:Libs:MSL_Runtime_PPC.lib"
-			"$(CW):MSL:MSL_C:MSL_MacOS:Lib:PPC:MSL_SIOUX_PPC.Lib" 
+			"$(CW):MSL:MSL_C:MSL_MacOS:Lib:PPC:MSL_SIOUX_PPC.Lib"
 			"$(CW):MSL:MSL_C:MSL_MacOS:Lib:PPC:MSL_C_PPC.Lib" ;
 
 	C++				?= mwcppc ;
@@ -810,15 +815,15 @@ else if $(MAC)
 	DOTDOT			?= "::" ;
 	HDRS			?= $(MACHDRS) $(MPWHDRS) ;
 	LINK			?= mwlinkppc ;
-	LINKFLAGS		?= -mpwtool -warn ;								
-	STDLIBS			?= $(MACLIBS) $(MPWLIBS) ;								
+	LINKFLAGS		?= -mpwtool -warn ;
+	STDLIBS			?= $(MACLIBS) $(MPWLIBS) ;
 	SHSTDLIBS		?= $(STDLIBS) ;
 	MKDIR			?= newfolder ;
 	MV				?= rename -y ;
 	NOARSCAN		?= true ;
 	RM				?= delete -y ;
 	SLASH			?= ":" ;
-	STDHDRS			?= ; 
+	STDHDRS			?= ;
 	SUFLIB			?= .lib ;
 	SUFOBJ			?= .o ;
 }
@@ -847,7 +852,7 @@ else if $(OS) = BEOS && $(OSPLAT) = PPC
 	YACCFILES		?= y.tab ;
 	YACCFLAGS		?= -d ;
 }
-else if $(OS) = BEOS 
+else if $(OS) = BEOS
 {
 	BINDIR			?= /boot/home/config/bin ;
 	CC				?= gcc ;
@@ -879,7 +884,7 @@ else if $(UNIX)
 		CC				?= gcc ;
 		YACC			?= bison -y ;
 
-	case CYGWIN :		
+	case CYGWIN :
 		CC				?= gcc ;
 		CCFLAGS			+= -D__cygwin__ ;
 		LEX				?= flex ;
@@ -908,12 +913,12 @@ else if $(UNIX)
 		C++				?= gcc ;
 		CCFLAGS			+= -D_POSIX_SOURCE ;
 		HDRS			+= /usr/include ;
-		RANLIB			?= "" ; 
+		RANLIB			?= "" ;
 		NOARSCAN		?= true ;
 		NOARUPDATE		?= true ;
 
 	case MVS :
-		RANLIB			?= "" ; 
+		RANLIB			?= "" ;
 
 	case NEXT :
 		AR				?= libtool -o ;
@@ -968,9 +973,9 @@ else if $(UNIX)
 	# UNIX defaults
 
 	CCFLAGS			?= -DUNIX -D_THREAD_SAFE -pipe ;
-	CCOPTFLAG		?= -O2 ;		
-	CCDEBUGFLAG		?= -g ;		
-	CCPROFFLAG		?= ;		
+	CCOPTFLAG		?= -O2 ;
+	CCDEBUGFLAG		?= -g ;
+	CCPROFFLAG		?= ;
 	CCSHOBJFLAG		?= -fPIC ;			# Position independent is better for ShLibrary
 	C++FLAGS		?= $(CCFLAGS) ;
 	CHMOD			?= chmod ;
@@ -1008,7 +1013,7 @@ else if $(UNIX)
 		HOSTTYPE = $(JAMUNAME[1]) ;
 	}
 
-	if $(HOSTTYPE) = x86_64 
+	if $(HOSTTYPE) = x86_64
 	 || $(HOSTTYPE) = x86_64-linux
 	 || $(HOSTTYPE) = amd64 {
 		ECHO "We're on a 64 bit host" ;
@@ -1066,7 +1071,7 @@ else if $(UNIX)
 	SHLINKFLAGS		?= ;
 	STDLIBS			?= ;
 	SHSTDLIBS		?= $(STDLIBS) ;
-	LINKOUTFLAG	 	?= "-o " ;		
+	LINKOUTFLAG	 	?= "-o " ;
 	LN				?= ln ;
 	MANDIR			?= /usr/local/man ;
 	MKDIR			?= mkdir ;
@@ -1087,7 +1092,7 @@ else if $(UNIX)
 	SUFIMPLIB		?= .so ;
 	SUFOBJ			?= .o ;
 
-	DEFFLAG		 	?= -D ;				
+	DEFFLAG		 	?= -D ;
 	UNDEFFLAG		?= -U ;
 	YACC			?= ;
 	YACCGEN			?= ;
@@ -1119,7 +1124,7 @@ Always clean uninstall ;
 # ===========================================================
 # ArgyllCMS Jambase building blocks:
 
-# Allow returning of a targets "on" variable 
+# Allow returning of a targets "on" variable
 # Only the first variable in the list "on" variable is retrieved
 # ret = geton target : variable ;
 rule noop { return $(<) ; }
@@ -1131,7 +1136,7 @@ rule geton {
 
 # Separate a single path into it's components, irrespective of
 # whether a MSWindows or UNIX path separator is used.
-# d1 d2 ... file = _SepPath path ; 
+# d1 d2 ... file = _SepPath path ;
 rule _SepPath
 {
 #Echo "_SepPath called with = '" $(<[1]) "'" ;
@@ -1176,10 +1181,10 @@ rule _SepPath
 #Echo "_SepPath after DOS letters _out =" $(_out) ;
 	}
 
-	# Make sure leading / is in the correct form 
+	# Make sure leading / is in the correct form
 	if $(_out[1]) = "/" || $(_out[1]) = "\\" {
 		_out = $(SLASH) $(_out[2-]) ;
-	} 
+	}
 
 #Echo "_SepPath returning _out =" $(_out) ;
 
@@ -1231,17 +1236,17 @@ rule _DirName
 
 # Rationalize a path (ie. cancell dirs & .. )
 # Currently paths that cancel out return " ".
-# d1 d2 .. file = _RatPath d1 d2 .. file ; 
+# d1 d2 .. file = _RatPath d1 d2 .. file ;
 rule _RatPath
 {
 	local _in = $(<) ;
 	local _rio = ;		# reversed intermediate output
 	local _out = ;
 	local _gotdot = ;	# There was a dot in the input path
-	local _first = ;	# Fixed first elements 
+	local _first = ;	# Fixed first elements
 
 #Echo "_RatPath called with '" $(_in) "'" ;
-	
+
 	# Deal with DOS drive letters
 	if $(NT) {
 		switch $(_in[1]) {
@@ -1276,7 +1281,7 @@ rule _RatPath
 #Echo "Found .. so removed previous and got _rio = " $(_rio) ;
 		} else {						# Add next
 			# If we're decending with a directory
-			if $(_in[1]) != $(DOT) {		
+			if $(_in[1]) != $(DOT) {
 				_rio = $(_in[1]) $(_rio) ;
 #Echo "Adding so _rio = " $(_rio) ;
 			} else {
@@ -1290,7 +1295,7 @@ rule _RatPath
 		_rio = $(DOT) ;
 	}
 #Echo "Final _rio = " $(_rio) ;
-	# Reverse it 
+	# Reverse it
 	for _i in $(_rio) {
 		_out = $(_i) $(_out) ;
 	}
@@ -1307,7 +1312,7 @@ rule _RatPath
 # Re-root a directory path by pre-pending the given path.
 # Don't do this if the path is absolute
 # Don't return anything if the path is empty.
-# p1 p2 .. file = _RootPath d1 d2 .. : p1 p2 ... file ; 
+# p1 p2 .. file = _RootPath d1 d2 .. : p1 p2 ... file ;
 rule _RootPath
 {
 	local _i _out = ;
@@ -1340,7 +1345,7 @@ rule _RootPath
 # Re-root a set of directory paths by pre-pending the given path.
 # Don't do this if the path is absolute
 # Don't return anything if the path is empty.
-# paths = RootPaths dir : paths ; 
+# paths = RootPaths dir : paths ;
 rule RootPaths
 {
 	local _d = [ _SepPath $(<[1]) ] ;
@@ -1361,7 +1366,7 @@ rule RootPaths
 	return $(_out) ;
 }
 
-# - - - - - - - - - - - - - - 
+# - - - - - - - - - - - - - -
 
 # Rationalize a set of paths (ie. cancell dirs & .. )
 # paths = RatPaths paths ;
@@ -1455,15 +1460,15 @@ rule _NormPaths
 #Echo "_NormPaths got '" $(<) "' dir '" $(_p) "' type '" $(3) "'srcdir "' $(_src) "' dstdir '" $(_dst) "'" ;
 	for _i in $(<)
 	{
-#Echo "_i = '" $(_i) "'" ; 
+#Echo "_i = '" $(_i) "'" ;
 		_t =    [ _SepPath $(_i) ] ;
-#Echo "_SepPath _i = '" $(_t) "'" ; 
+#Echo "_SepPath _i = '" $(_t) "'" ;
 		_t =    [ _RootPath $(_p) : $(_t) ] ;
-#Echo "_RootPath _t = '" $(_t) "'" ; 
+#Echo "_RootPath _t = '" $(_t) "'" ;
 
 		if $(_src) && $(3) = "src" {
 			_t = [ _RootPath $(_src) : $(_t) ] ;
-#Echo "_src += _t = '" $(_i) "'" ; 
+#Echo "_src += _t = '" $(_i) "'" ;
 
 		} else if $(_dst) && $(3) = "dst" {
 			local _f ;
@@ -1474,10 +1479,10 @@ rule _NormPaths
 				_t = $(DOT) ;
 			}
 			_t = [ _RootPath [ _SepPath $(_t) ] : $(_dst) ] $(_f) ;
-#Echo " _t += _dst = '" $(_t) "'" ; 
+#Echo " _t += _dst = '" $(_t) "'" ;
 		}
 		_t = [ _RatPath $(_t) ] ;
-#Echo "_RatPath _t = '" $(_t) "'" ; 
+#Echo "_RatPath _t = '" $(_t) "'" ;
 		# Special case of complete cancelation that can occure for a pure
 		# directory path (?)
 		if $(_t) = "" {
@@ -1485,14 +1490,14 @@ rule _NormPaths
 		}
 		_t = [ _DirName $(_t) ] ;
 		_out += $(_t) ;
-#Echo "_out += '" $(_t) "'" ; 
+#Echo "_out += '" $(_t) "'" ;
 	}
 
 #Echo "_NormPaths returns '" $(_out) "'" ;
 	return $(_out) ;
 }
 
-# Normalize a set of targets. 
+# Normalize a set of targets.
 # This is the same as NormPaths except it
 # then strips the path out and uses it to set the
 # Grist, NOMLOC, LOCATE and SEARCH on the target.
@@ -1505,7 +1510,7 @@ rule NormISrcTargets
 	return [ _NormTargets $(<) : $(>) : "isrc" ] ;
 }
 
-# Normalize a set of targets. 
+# Normalize a set of targets.
 # This is the same as NormPaths except it
 # then strips the path out and uses it to set the
 # Grist, NOMLOC, LOCATE and SEARCH on the target.
@@ -1518,7 +1523,7 @@ rule NormIDstTargets
 	return [ _NormTargets $(<) : $(>) : "idst" ] ;
 }
 
-# Normalize a set of targets. 
+# Normalize a set of targets.
 # This is the same as NormPaths except it
 # then strips the path out and uses it to set the
 # Grist, NOMLOC, LOCATE and SEARCH on the target.
@@ -1531,7 +1536,7 @@ rule NormSrcTargets
 	return [ _NormTargets $(<) : $(>) : "src" ] ;
 }
 
-# Normalize a set of targets. 
+# Normalize a set of targets.
 # This is the same as NormPaths except it
 # then strips the path out and uses it to set the
 # Grist, NOMLOC, LOCATE and SEARCH on the target.
@@ -1544,7 +1549,7 @@ rule NormDstTargets
 	return [ _NormTargets $(<) : $(>) : "dst" ] ;
 }
 
-# Normalize a set of targets. 
+# Normalize a set of targets.
 # This is the same as NormPaths except it
 # then strips the path out and uses it to set the
 # Grist, NOMLOC, LOCATE and SEARCH on the target.
@@ -1657,8 +1662,8 @@ rule _NormTargets
 			SEARCH on $(_t) = $(_d) ;
 			$(_t)-target = "isrc" ;
 		}
-	
-#Echo "On '" $(_t) "' set LOCATE = '" [ geton $(_t) : LOCATE ] "' SEARCH = '" [ geton $(_t) : SEARCH ] "' NOMLOC = '" [ geton $(_t) : NOMLOC ] "'" ; 
+
+#Echo "On '" $(_t) "' set LOCATE = '" [ geton $(_t) : LOCATE ] "' SEARCH = '" [ geton $(_t) : SEARCH ] "' NOMLOC = '" [ geton $(_t) : NOMLOC ] "'" ;
 		_out += $(_t) ;
 	}
 
@@ -1692,7 +1697,7 @@ rule _TargetIDs
 # Copy the target related "on" variables from one
 # target to another.
 #rule CopyTarget dest : source ;
-rule CopyTarget 
+rule CopyTarget
 {
 	NOMLOC on $(<) = [ geton $(>) : NOMLOC ] ;
 	LOCATE on $(<) = [ geton $(>) : LOCATE ] ;
@@ -1700,9 +1705,9 @@ rule CopyTarget
 }
 
 # Make sure a non-target isn't LOCATED or SEARCH'd by
-# setting LOCATE, SEARCH and NOMLOC to "" 
+# setting LOCATE, SEARCH and NOMLOC to ""
 #rule NotTargets vars ;
-rule NotTargets 
+rule NotTargets
 {
 	NOMLOC on $(<) = "" ;
 	LOCATE on $(<) = "" ;
@@ -1724,13 +1729,13 @@ rule CreateIDstTargets
 }
 
 # Given a normalized target, return the
-# orgiginal path to it. 
+# orgiginal path to it.
 # (We use NOMLOC to do this.)
 # path = DeNormTargs target ;
 rule DeNormTargs
 {
 	local _i _t _p _out = ;
-	
+
 	for _i in $(<) {
 		_p = [ geton $(_i) : NOMLOC ] ;
 		_t = $(_i:G=) ;
@@ -1741,7 +1746,7 @@ rule DeNormTargs
 }
 
 # Given a list of directories and a list of files,
-# simply concatenate them in combination separated by a / 
+# simply concatenate them in combination separated by a /
 # paths1/paths = CatPaths path1 : paths ;
 rule CatPaths
 {
@@ -1749,7 +1754,7 @@ rule CatPaths
 }
 
 # Try and locate a given file pattern starting from the current
-# directory and working towards the root. 
+# directory and working towards the root.
 # We use a heuristic to figure out when to stop, since
 # Jam doesn't have pwd :-(
 # found = FindRoot starting_dir : file ;
@@ -1792,7 +1797,7 @@ rule FindToRoot
 rule DoInit
 {
 	if ! $(DONEANCHORINIT) {
-	
+
 		SUBDIR ?= $(DOT) ;
 		_SUBDIR ?= $(DOT) ;
 
@@ -1811,7 +1816,7 @@ rule DoInit
 		P_PREF_LINKFLAGS = ;
 		P_PREF_SHLINKFLAGS = ;
 
-		FindTop ;		# Look for a default project file 
+		FindTop ;		# Look for a default project file
 
 		TRACESTDHDRS = false ;		# don't trace system path #include file dependenicies
 		DONEANCHORINIT = true ;
@@ -1842,16 +1847,16 @@ rule ProjTop
 			_SUBDIR = $(_TOP) ;
 			_INVSUBDIR = [ _InvertPath $(_SUBDIR) ] ;
 			SUBDIR = [ _DirName $(_SUBDIR) ] ;
-#Echo "_SUBDIR = '" $(_SUBDIR) "'" ; 
-#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ; 
+#Echo "_SUBDIR = '" $(_SUBDIR) "'" ;
+#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ;
 
 			# Translate SRCDIR for new SUBDIR
 			if $(SRCDIR) {
-#Echo "SRCDIR olddir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR olddir '" $(SRCDIR) "'" ;
 				SRCDIR = [ _SepPath $(SRCDIR) ] ;
-				SRCDIR = [ _RootPath $(_INVSUBDIR) : [ _RootPath $(SRCDIR) : $(_SUBDIR) ] ] ; 
+				SRCDIR = [ _RootPath $(_INVSUBDIR) : [ _RootPath $(SRCDIR) : $(_SUBDIR) ] ] ;
 				SRCDIR = [ _DirName [ _RatPath $(SRCDIR) ] ] ;
-#Echo "SRCDIR newdir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR newdir '" $(SRCDIR) "'" ;
 			}
 
 #Echo "About to include Jamtop '" $(found) "'" ;
@@ -1859,13 +1864,13 @@ rule ProjTop
 
 			# Un Translate SRCDIR, in case it was set in the rules directory
 			if $(SRCDIR) {
-#Echo "_SUBDIR = '" $(_SUBDIR) "'" ; 
-#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ; 
-#Echo "SRCDIR newdir '" $(SRCDIR) "'" ; 
+#Echo "_SUBDIR = '" $(_SUBDIR) "'" ;
+#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ;
+#Echo "SRCDIR newdir '" $(SRCDIR) "'" ;
 				SRCDIR = [ _SepPath $(SRCDIR) ] ;
-				SRCDIR = [ _RootPath $(_SUBDIR) : [ _RootPath $(SRCDIR) : $(_INVSUBDIR) ] ] ; 
+				SRCDIR = [ _RootPath $(_SUBDIR) : [ _RootPath $(SRCDIR) : $(_INVSUBDIR) ] ] ;
 				SRCDIR = [ _DirName [ _RatPath $(SRCDIR) ] ] ;
-#Echo "SRCDIR olddir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR olddir '" $(SRCDIR) "'" ;
 			}
 
 			# Restore things
@@ -1875,13 +1880,13 @@ rule ProjTop
 		} else {
 			Echo "WARNING :- no project " $(TOP) "Jamtop found" ;
 		}
-		
+
 		$(TOP)-SET = true ;
 	}
 }
 
 # Search for the project top by looking for the Jamtop
-# starting at $(SUBDIR) and lookup upwards. 
+# starting at $(SUBDIR) and lookup upwards.
 # FindTop ;
 rule FindTop
 {
@@ -1905,16 +1910,16 @@ rule FindTop
 			_SUBDIR = $(_TOP) ;
 			_INVSUBDIR = [ _InvertPath $(_SUBDIR) ] ;
 			SUBDIR = [ _DirName $(_SUBDIR) ] ;
-#Echo "_SUBDIR = '" $(_SUBDIR) "'" ; 
-#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ; 
+#Echo "_SUBDIR = '" $(_SUBDIR) "'" ;
+#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ;
 
 			# Translate SRCDIR for new SUBDIR
 			if $(SRCDIR) {
-#Echo "SRCDIR olddir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR olddir '" $(SRCDIR) "'" ;
 				SRCDIR = [ _SepPath $(SRCDIR) ] ;
-				SRCDIR = [ _RootPath $(_INVSUBDIR) : [ _RootPath $(SRCDIR) : $(_SUBDIR) ] ] ; 
+				SRCDIR = [ _RootPath $(_INVSUBDIR) : [ _RootPath $(SRCDIR) : $(_SUBDIR) ] ] ;
 				SRCDIR = [ _DirName [ _RatPath $(SRCDIR) ] ] ;
-#Echo "SRCDIR newdir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR newdir '" $(SRCDIR) "'" ;
 			}
 
 #Echo "About to include Jamtop '" $(_JRF) "'" ;
@@ -1923,13 +1928,13 @@ rule FindTop
 
 			# Un Translate SRCDIR, in case it was set in the ruls directory
 			if $(SRCDIR) {
-#Echo "_SUBDIR = '" $(_SUBDIR) "'" ; 
-#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ; 
-#Echo "SRCDIR newdir '" $(SRCDIR) "'" ; 
+#Echo "_SUBDIR = '" $(_SUBDIR) "'" ;
+#Echo "_INVSUBDIR = '" $(_INVSUBDIR) "'" ;
+#Echo "SRCDIR newdir '" $(SRCDIR) "'" ;
 				SRCDIR = [ _SepPath $(SRCDIR) ] ;
-				SRCDIR = [ _RootPath $(_SUBDIR) : [ _RootPath $(SRCDIR) : $(_INVSUBDIR) ] ] ; 
+				SRCDIR = [ _RootPath $(_SUBDIR) : [ _RootPath $(SRCDIR) : $(_INVSUBDIR) ] ] ;
 				SRCDIR = [ _DirName [ _RatPath $(SRCDIR) ] ] ;
-#Echo "SRCDIR olddir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR olddir '" $(SRCDIR) "'" ;
 			}
 
 			# Restore things
@@ -1941,7 +1946,7 @@ rule FindTop
 		Echo "WARNING :- no project Jamtop found, no TOP set !" ;
 
 		if ! $(TOP) {
-			TOP = $(DOT) ;		# set a default TOP 
+			TOP = $(DOT) ;		# set a default TOP
 			_TOP = $(DOT) ;
 		}
 	}
@@ -1952,7 +1957,7 @@ rule FindTop
 # [ we're using a hack here, since Jam 2.5 doesn't have
 #   any functions that will simply resolve a path relative
 #   to CWD into an absolute path. ]
-# d1 d2 .. = _InvertPath d1 d2 .. 
+# d1 d2 .. = _InvertPath d1 d2 ..
 rule _InvertPath
 {
 	local _i _o _d ;
@@ -1986,11 +1991,11 @@ rule _InvertPath
 
 #Echo "_InvertPath inverting '" $(_i) "'" ;
 
-			_d1 = [ _DirName $(_d) ] ; 
+			_d1 = [ _DirName $(_d) ] ;
 			_l1 = [ GLOB $(_d1) : * ] ;
 #Echo "_d1 = '" $(_d1) "'" ;
 			_d += $(_i) ;
-			_d2 = [ _DirName $(_d) ] ; 
+			_d2 = [ _DirName $(_d) ] ;
 #Echo "_d2 = '" $(_d2) "'" ;
 			_l2 = [ GLOB $(_d2) : * ] ;
 
@@ -2033,9 +2038,9 @@ rule _InvertPath
 ANCHORED_PATH_VARS = ;
 
 # Variables to save before starting a new Jamfile, then
-# restore once it's finished. 
+# restore once it's finished.
 
-SUBDIR_VARS = SUBDIR _SUBDIR TOP _TOP SRCDIR DSTDIR 
+SUBDIR_VARS = SUBDIR _SUBDIR TOP _TOP SRCDIR DSTDIR
               P_ASFLAGS P_CCFLAGS P_C++FLAGS P_LINKFLAGS P_SHLINKFLAGS
               ASFLAGS CCFLAGS C++FLAGS LINKFLAGS SHLINKFLAGS
               P_PREF_ASFLAGS P_PREF_CCFLAGS P_PREF_C++FLAGS P_PREF_LINKFLAGS
@@ -2070,7 +2075,7 @@ rule _JamInclude
 	}
 
 	if $(_JAMINCLUDE_PEER) != "true" {
-		# Incorporate this levels extra flags & header paths into the base 
+		# Incorporate this levels extra flags & header paths into the base
 		P_ASFLAGS += $(ASFLAGS) ;
 		P_CCFLAGS += $(CCFLAGS) ;
 		P_C++FLAGS += $(C++FLAGS) ;
@@ -2097,7 +2102,7 @@ rule _JamInclude
 		if ! $(P_PREF_SHLINKFLAGS) {
 			P_PREF_SHLINKFLAGS = $(PREF_SHLINKFLAGS) ; }
 	}
-	
+
 	# Set default for new Jamfile extra and preferred flags
 	ASFLAGS = ;
 	CCFLAGS = ;
@@ -2137,17 +2142,17 @@ rule _JamInclude
 	}
 
 	# Translate SRCDIR for new SUBDIR
-#Echo "SRCDIR olddir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR olddir '" $(SRCDIR) "'" ;
 	if $(SRCDIR) {
 		local subdir = $(_SUBDIR[2-]) ;
 		local invsubdir = [ FReverse $(_INVSUBDIR) ] ;
 		invsubdir = [ FReverse $(invsubdir[2-]) ] ;
 #Echo "subdir-1 =" $(subdir) ;
 #Echo "invsubdir-1 =" $(invsubdir) ;
-		SRCDIR = [ _SepPath $(SRCDIR) ] ; 
-		SRCDIR = [ _RootPath $(invsubdir) : [ _RootPath $(SRCDIR) : $(subdir) ] ] ; 
+		SRCDIR = [ _SepPath $(SRCDIR) ] ;
+		SRCDIR = [ _RootPath $(invsubdir) : [ _RootPath $(SRCDIR) : $(subdir) ] ] ;
 		SRCDIR = [ _DirName [ _RatPath $(SRCDIR) ] ] ;
-#Echo "SRCDIR newdir '" $(SRCDIR) "'" ; 
+#Echo "SRCDIR newdir '" $(SRCDIR) "'" ;
 	}
 
 	_jamfile = [ NormSrcPaths $(JAMFILE) ] ;
@@ -2155,7 +2160,7 @@ rule _JamInclude
 #Echo "About to include " $(_jamfile) ;
 	include $(_jamfile) ;
 
-	# Restore variable before returning 
+	# Restore variable before returning
 	for _i in $(_SUBDIR_VARS) {
 		$(_i) = $(parent_$(_i)) ;
 	}
@@ -2228,7 +2233,7 @@ rule Bulk
 	for _is in $(_s)
 	{
 		_it = $(_t[1]) ;
-		_t = $(_t[2-]) ;	# Track _is 
+		_t = $(_t[2-]) ;	# Track _is
 
 		Depends files : $(_it) ;
 		Depends $(_it) : $(_is) ;
@@ -2239,7 +2244,7 @@ rule Bulk
 	}
 }
 
-# Cc object : source : flags : defines : hdrpaths ; 
+# Cc object : source : flags : defines : hdrpaths ;
 rule Cc
 {
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2307,7 +2312,7 @@ rule Cc_
 	CCDEFS on $(<) = [ on $(<) FDefines $(DEFINES) ] ;
 }
 
-# C++ object : source : flags : defines : hdrpaths ; 
+# C++ object : source : flags : defines : hdrpaths ;
 rule C++
 {
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2374,7 +2379,7 @@ rule C++_
 
 rule Chmod_
 {
-#Echo "Chmod_ on '" $(<) "' with MODE = '" [ geton $(<) : MODE ] "'" ; 
+#Echo "Chmod_ on '" $(<) "' with MODE = '" [ geton $(<) : MODE ] "'" ;
 	if $(CHMOD) { Chmod1 $(<) ; }
 }
 
@@ -2538,7 +2543,7 @@ rule FakeFile_
 
 
 # Compile Fortran source file into object
-# Fortran object : source ; 
+# Fortran object : source ;
 rule Fortran
 {
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2565,7 +2570,7 @@ rule Fortran_
 # All > are assumed to be files that < is dependent on
 # with >[1] being an executable
 # SRCDIR and DSTDIR are ignored.
-rule GenFile 
+rule GenFile
 {
 #Echo "GenFile got '" $(<) "' and '" $(>) "'" ;
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2574,7 +2579,7 @@ rule GenFile
 	local _a = [ NormISrcTargets $(>[2-]) ] ;
 
 #Echo "GenFile normed '" $(_t) "' and '" $(_s) "' plus '" $(_a) "'" ;
- 
+
 	Depends $(_t) : $(_s) $(_a) ;
 	if ! $(_s[1]:G) {		# In case PATH doesn't have . in it.
 		_s = $(DOT)$(SLASH)$(_s[1]:G=) $(_s[2-]) ;
@@ -2594,7 +2599,7 @@ rule GenFile1
 # Only >[1] is assumed to be an executable that < is dependent on.
 # $(3) are optional extra dependecies
 # SRCDIR and DSTDIR are ignored.
-rule GenFileND 
+rule GenFileND
 {
 #Echo "GenFileND got '$(<)' and '$(>)' and src targets '$(_d)'" ;
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2632,7 +2637,7 @@ rule GenFileND1
 # None of > is assumed to be a file.
 # $(3) are optional extra dependecies
 # SRCDIR and DSTDIR are ignored.
-rule GenFileNND 
+rule GenFileNND
 {
 #Echo "GenFileNND got '$(<)' and '$(>)' and src targets '$(3)' " ;
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2649,7 +2654,7 @@ rule GenFileNND
 	NotTargets $(_a) ;
 	NoCare $(_a) ;
 	NotFile $(_a) ;			# Supresses "independent target", but may mark a directory wrongly
-	
+
 	GenFileNND1 $(_t) : $(_a) ;
 	Clean clean : $(_t) ;
 }
@@ -2665,7 +2670,7 @@ rule GenFileNND1
 # None of > is assumed to be a file.
 # $(3) are optional extra dependecies
 # SRCDIR and DSTDIR are ignored.
-rule GenFileNNDnc 
+rule GenFileNNDnc
 {
 #Echo "GenFileNNDnc got '$(<)' and '$(>)' and src targets '$(3)' " ;
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2682,15 +2687,15 @@ rule GenFileNNDnc
 	NotTargets $(_a) ;
 	NoCare $(_a) ;
 	NotFile $(_a) ;			# Supresses "independent target", but may mark a directory wrongly
-	
+
 	GenFileNND1 $(_t) : $(_a) ;
 }
 
-# Concatenate all the argument to the file 
+# Concatenate all the argument to the file
 # Each argument to a separate line
 # If no arguments, create empty file
 # SRCDIR and DSTDIR are ignored.
-rule CatToFile 
+rule CatToFile
 {
 #Echo "CatToFile got '" $(<) "' and '" $(>) "'" ;
 	# Normalize target names and set Grist LOCATE and SOURCE
@@ -2786,7 +2791,7 @@ rule HdrRule
 	local _schpath = [ geton $(<) : HDRSEARCH ] ;	# Search path used to find these
 	local _s _ts ;				# include source targets, sources to trace
 
-#Echo "HDRSEARCH on '" $(<) "' is = '" $(_schpath) "'" ; 
+#Echo "HDRSEARCH on '" $(<) "' is = '" $(_schpath) "'" ;
 
 	# See if we can locate the header amongst the generated files.
 #Echo "Checking for matches of known targets" ;
@@ -2811,7 +2816,7 @@ rule HdrRule
 				_sp += [ NormPaths $(_j:D) : $(_k) ] ;	# paths to search
 			}
 		}
-		if ! $(_ss) && $(_sp) {		# We've not seen that target 
+		if ! $(_ss) && $(_sp) {		# We've not seen that target
 			local _found = ;
 #Echo "Searching for '" $(_j) "' in paths '" $(_sp) "'" ;
 			# See if we can find the header
@@ -2846,14 +2851,14 @@ rule HdrRule
 				_s += $(_ss) ;	# Use plain header name as target ID
 			}
 		}
-		# We're left with $(_ss_) being the target and $(_k) being the search path 
+		# We're left with $(_ss_) being the target and $(_k) being the search path
 
 		# Add this to our list that will also be scanned for #includes
 #Echo "Dealt with'" $(_j) "', _ss = '" $(_ss) "' and _k = '" $(_k) "'" ;
 		if  ( ! $(_k) in "__unknown__" )
 		 && ( $(TRACESTDHDRS) = true || ! $(_k) in $(_stdhdrs) )  {
 			_st += $(_ss) ;
-		} 
+		}
 	}
 
 #Echo "Normalized includes = '" $(_s) "'" ;
@@ -2892,7 +2897,7 @@ rule HdrRule
 	Includes $(<) : $(_s) ;
 }
 
-# Public InstallInto 
+# Public InstallInto
 # InstallInto dir : sources ;		install any files
 rule InstallInto
 {
@@ -2927,21 +2932,21 @@ rule _InstallInto
 	for _is in $(_s)
 	{
 		_it = $(_t[1]) ;
-		_t = $(_t[2-]) ;	# Track _is 
+		_t = $(_t[2-]) ;	# Track _is
 
 #Echo "_InstallInto installing target '" $(_it) "' from src '" $(_is) "'" ;
 		Depends $(_it) : $(_is) ;
 		Install $(_it) : $(_is) ;
 		Chmod_ $(_it) ;
 
-		if $(OWNER) && $(CHOWN) 
-		{ 
+		if $(OWNER) && $(CHOWN)
+		{
 			Chown_ $(_it) ;
 			OWNER on $(_it) = $(OWNER) ;
 		}
 
-		if $(GROUP) && $(CHGRP) 
-		{ 
+		if $(GROUP) && $(CHGRP)
+		{
 			Chgrp_ $(_it) ;
 			GROUP on $(_it) = $(GROUP) ;
 		}
@@ -3039,7 +3044,7 @@ rule InstallMan
 	}
 }
 
-# Lex 
+# Lex
 # Lex source.c : source.l ;
 rule Lex
 {
@@ -3061,7 +3066,7 @@ rule Lex_
 }
 
 # Library - create a static library from sources.
-# Library library : sources : flags : defines : hdrpaths : objects ; 
+# Library library : sources : flags : defines : hdrpaths : objects ;
 rule Library
 {
 	LibraryFromObjects $(<) : $(>) $(6) ;
@@ -3084,11 +3089,11 @@ rule LibraryFromObjects
 
 	MakeLocate $(_l) ;
 
-	if $(NOARSCAN) 
-	{ 
+	if $(NOARSCAN)
+	{
 		# If we can't scan the library to timestamp its contents,
 		# we have to just make the library depend directly on the
-		# on-disk object files.  
+		# on-disk object files.
 
 		Depends $(_l) : $(_s) ;
 	}
@@ -3162,7 +3167,7 @@ rule LibraryFromLibraries
 }
 
 # ShLibrary - create a shared library from sources.
-# ShLibrary library : sources : flags : defines : hdrpaths : objects : libs : shlibs ; 
+# ShLibrary library : sources : flags : defines : hdrpaths : objects : libs : shlibs ;
 rule ShLibrary
 {
 	ShLibraryFromObjects $(<) : $(>) $(6) : $(7) : $(8) ;
@@ -3234,7 +3239,7 @@ rule ShLibraryFromObjects
 		ShLinkDef_ $(_sl) $(_l) : $(_s) ;
 	} else {
 		if (SHLINKSEARCHEXEPATH) {		# UNIX special option
-	
+
 			if $(OS) = MACOSX {		# OS X version of ld
 				SHLINKSEARCHEXEPATH = @executable_path/ ;
 			} else {
@@ -3250,10 +3255,10 @@ rule ShLibraryFromObjects
 	ObjectC++Flags $(>) : $(CCSHOBJFLAG) ;
 
 	if $(3) {
-		ShLibraryLibraries $(<) : $(3) ;	
+		ShLibraryLibraries $(<) : $(3) ;
 	}
 	if $(4) {
-		ShLibraryShLibraries $(<) : $(4) ;	
+		ShLibraryShLibraries $(<) : $(4) ;
 	}
 }
 
@@ -3322,7 +3327,7 @@ rule MainLinkFlags
 }
 
 # Make an executable from sources
-# Main image : sources : flags : defines : hdrpaths : objects : libs : shlibs ; 
+# Main image : sources : flags : defines : hdrpaths : objects : libs : shlibs ;
 rule Main
 {
 	MainFromObjects $(<) : $(>) $(6) : $(7) : $(8) ;
@@ -3330,8 +3335,8 @@ rule Main
 }
 
 # Make a variant executable from sources
-# Objects are distiguished by appending "_image" 
-# MainVariant image : sources : flags : defines : hdrpaths : objects : libs : shlibs ; 
+# Objects are distiguished by appending "_image"
+# MainVariant image : sources : flags : defines : hdrpaths : objects : libs : shlibs ;
 rule MainVariant
 {
 	local _i _t _o ;
@@ -3374,10 +3379,10 @@ rule MainFromObjects
 	MakeLocate $(_t) ;
 
 	if $(3) {
-		LinkLibraries $(<) : $(3) ;	
+		LinkLibraries $(<) : $(3) ;
 	}
 	if $(4) {
-		LinkShLibraries $(<) : $(4) ;	
+		LinkShLibraries $(<) : $(4) ;
 	}
 
 #Echo "MainFromObjects LINKFLAGS = '" $(LINKFLAGS) "' and P_LINKFLAGS ='" $(P_LINKFLAGS) "'" ;
@@ -3387,7 +3392,7 @@ rule MainFromObjects
 		local pref_linkflags = $(P_PREF_LINKFLAGS) ;
 		pref_linkflags ?= $(PREF_LINKFLAGS) ;
 		LINKFLAGS on $(_t) += $(P_LINKFLAGS) $(LINKFLAGS) $(pref_linkflags) ;
-#Echo "LINKFLAGS on $(_t) = '" [ geton $(_t) : LINKFLAGS ] "'" ; 
+#Echo "LINKFLAGS on $(_t) = '" [ geton $(_t) : LINKFLAGS ] "'" ;
 	}
 
 #Echo "MainFromObjects LINKOBJS = '" $(LINKOBJS) "' and P_LINKOBJS ='" $(P_LINKOBJS) "'" ;
@@ -3506,7 +3511,7 @@ rule MkDir
 }
 
 # Internal MkDir
-# MkDir dir [ : dependency ] 
+# MkDir dir [ : dependency ]
 rule MkDir_
 {
 #Echo "MkDir_ got '" $(<) "' : '" $(>) "'" ;
@@ -3524,18 +3529,18 @@ rule MkDir_
 
 #Echo "MkDir_ target = '" $(_t) "' dependant = '" $(>) "'" ;
 
-	if $(>) {		# Thing that depends on this directory 
+	if $(>) {		# Thing that depends on this directory
 		Depends $(>) : $(_t) ;
 	}
 	NoUpdate $(_t) ;
 
 	# Don't create . or any directory already created.
 
-	if $(_t) != $(DOT) && ! $($(_t)-mkdir) 
+	if $(_t) != $(DOT) && ! $($(_t)-mkdir)
 	{
 		# Cheesy gate to prevent multiple invocations on same dir
 		# Arrange for jam dirs
-		# MkDir1 has the actions 
+		# MkDir1 has the actions
 
 #Echo "Making '" $(_t) "'" ;
 		$(_t)-mkdir = true ;
@@ -3570,7 +3575,7 @@ rule MkDir_
 
 			NotFile $(_s) ;
 		}
-		else if $(_s)  
+		else if $(_s)
 		{
 			# There's a parent; recurse.
 
@@ -3585,7 +3590,7 @@ rule MkDir_
 }
 
 # Deal with a single source to object.
-# Object object : sources : flags : defines : hdrpaths 
+# Object object : sources : flags : defines : hdrpaths
 rule Object
 {
 	#Echo "Object got " $(<) "and" $(>) "' flags '" $(3) "' defs '" $(4) "' hds '" $(5) "'" ;
@@ -3618,7 +3623,7 @@ rule Object
 	# the regexp pattern $(HDRSCAN) and then invokes $(HDRRULE)
 	# with the scanned file as the target and the found headers
 	# as the sources.  HDRSEARCH is the value of SEARCH used for
-	# the found header files. 
+	# the found header files.
 
 	HDRRULE on $(_s) = HdrRule ;
 	HDRSCAN on $(_s) = $(HDRPATTERN) ;
@@ -3808,7 +3813,7 @@ rule ObjectKeep
 }
 
 # Create object files from sources.
-# Objects sources : flags : defines : hdrpaths ; 
+# Objects sources : flags : defines : hdrpaths ;
 rule Objects
 {
 #Echo "Objects got src '" $(<) "' flags '" $(2) "' def '" $(3) "' hdrs '" $(4) "'" ;
@@ -3820,7 +3825,7 @@ rule Objects
 }
 
 # Marks sources as temporary with the TEMPORARY rule, and deletes sources once targets  are built.
-# Must be the last rule invoked on targets. 
+# Must be the last rule invoked on targets.
 # RmTemps targets : sources ;
 rule RmTemps
 {
@@ -3969,7 +3974,7 @@ rule Aswig_
 
 # FReverse a1 a2 a3 ... ;
 # return ... a3 a2 a1 ;
-rule FReverse 
+rule FReverse
 {
 
 	local _i _o = ;
@@ -3996,7 +4001,7 @@ rule FStripCommon
 
 # Append suffix if there is not already one
 # E.g., "FAppendSuffix yacc lex foo.bat : $(SUFEXE) ;"
-# returns (yacc,lex,foo.bat) on Unix and 
+# returns (yacc,lex,foo.bat) on Unix and
 # (yacc.exe,lex.exe,foo.bat) on NT.
 # FAppendSuffix files : suffix ;
 rule FAppendSuffix
@@ -4027,7 +4032,7 @@ rule FAppendSuffix
 
 # return a1 a2 ... with any empty elements deleted
 # FDelEmpty a1 a2 ... ;
-rule FDelEmpty 
+rule FDelEmpty
 {
 
 	local _i _o = ;
@@ -4086,7 +4091,7 @@ else if $(VMS)
 			{
 				_s = $(DOT) ;
 			}
-			else 
+			else
 			{
 				# This handles the following cases:
 				#		 a -> [.a]
@@ -4128,8 +4133,8 @@ actions updated together piecemeal Archive
 actions together ArchiveArchive
 {
 	mkdir .jamArchiveArchive$PPID
-	cp $(>) .jamArchiveArchive$PPID 
-	cd .jamArchiveArchive$PPID 
+	cp $(>) .jamArchiveArchive$PPID
+	cd .jamArchiveArchive$PPID
 	for i in $(>:BS)
 	do
     	ar -xo $i
@@ -4196,7 +4201,7 @@ actions GenFileNND1
 	$(>)
 }
 
-actions CreateCatFile_ 
+actions CreateCatFile_
 {
 	$(CP) /Y nul $(<) > nul
 }
@@ -4218,7 +4223,7 @@ actions HardLink_
 
 actions Install
 {
-	$(CP) $(>) $(<) 
+	$(CP) $(>) $(<)
 }
 
 actions Lex_
@@ -4231,11 +4236,11 @@ actions LexMv_
 	$(MV) lex.yy.c $(<)
 }
 
-#	Old: $(LINK) $(LINKFLAGS) $(LINKOUTFLAG)$(<) $(UNDEFS) $(>) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(STDLIBS) 
-#	$(LINK) $(LINKOUTFLAG)$(<) $(UNDEFS) $(>) $(LINKFLAGS) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(STDLIBS) 
+#	Old: $(LINK) $(LINKFLAGS) $(LINKOUTFLAG)$(<) $(UNDEFS) $(>) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(STDLIBS)
+#	$(LINK) $(LINKOUTFLAG)$(<) $(UNDEFS) $(>) $(LINKFLAGS) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(STDLIBS)
 actions Link_ bind LINKOBJS LINKLIBS LINKSHLIBS
 {
-	$(LINK) $(LINKOUTFLAG)$(<) $(UNDEFS) $(>) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(LINKFLAGS) $(STDLIBS)  
+	$(LINK) $(LINKOUTFLAG)$(<) $(UNDEFS) $(>) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(LINKFLAGS) $(STDLIBS)
 }
 
 if $(OS) = MACOSX {		# OS X version of ld
@@ -4243,7 +4248,7 @@ if $(OS) = MACOSX {		# OS X version of ld
 	# Link .o and .a into a .dylib
 	# gcc -dynamiclib -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,1.0,-current_version,1.0,-install_name,/usr/local/lib/libfoo.1.dylib -o libfoo.1.dylib $(OBJ)
 	# -Wl,-install_name,@executable_path ???
-	actions ShLink_ bind SHLINKOBJS SHLINKLIBS SHLINKSHLIBS  
+	actions ShLink_ bind SHLINKOBJS SHLINKLIBS SHLINKSHLIBS
 	{
 		$(LINK) -dynamiclib -Wl,-undefined,dynamic_lookup,-install_name,$(SHLINKSEARCHEXEPATH)$(<[1]:BS) $(LINKOUTFLAG)$(<[1]) $(>) $(SHLINKOBJS) $(SHLINKLIBS) $(SHLINKSHLIBS) $(SHLINKFLAGS) $(SHSTDLIBS)
 	}
@@ -4251,12 +4256,12 @@ if $(OS) = MACOSX {		# OS X version of ld
 } else {	# General gcc
 
 	# Link .o and .a into a .so
-	# To set .so search path: -Wl,-rpath,$(LINKSHLIBS:D) 
+	# To set .so search path: -Wl,-rpath,$(LINKSHLIBS:D)
 	# or set LD_LIBRARY_PATH
 	# or set /etc/ld.so.conf.d/*.conf
 	# To set .so search path (after flag):  -Wl,-soname=$(<[1]:BS)
 # Old:	$(LINK) -shared -Wl,-soname=$(SHLINKSEARCHEXEPATH)$(<[1]:BS) $(SHLINKFLAGS) $(LINKOUTFLAG)$(<[1]) $(>) $(SHLINKOBJS) $(SHLINKLIBS) $(SHLINKSHLIBS) $(SHSTDLIBS)
-	actions ShLink_ bind SHLINKOBJS SHLINKLIBS SHLINKSHLIBS  
+	actions ShLink_ bind SHLINKOBJS SHLINKLIBS SHLINKSHLIBS
 	{
 		$(LINK) -shared -Wl,-soname=$(SHLINKSEARCHEXEPATH)$(<[1]:BS) $(LINKOUTFLAG)$(<[1]) $(>) $(SHLINKOBJS) $(SHLINKLIBS) $(SHLINKSHLIBS) $(SHLINKFLAGS) $(SHSTDLIBS)
 	}
@@ -4297,7 +4302,7 @@ actions Yacc1_
 	$(YACC) $(YACCFLAGS) $(>)
 }
 
-actions YaccMv_ 
+actions YaccMv_
 {
 	$(MV) $(YACCFILES).c $(<[1])
 	$(MV) $(YACCFILES).h $(<[2])
@@ -4354,9 +4359,9 @@ if $(UNIX)
 		$(>[1]) $(<) $(>[2-])
 	}
 
-	actions CreateCatFile_ 
+	actions CreateCatFile_
 	{
-		$(CP) /dev/null $(<) 
+		$(CP) /dev/null $(<)
 	}
 
 	actions CatToFile_
@@ -4415,7 +4420,7 @@ EOF
 # NT specific actions
 #
 
-if $(NT) 
+if $(NT)
 {
 	# Ensure timestamp is updated
 
@@ -4481,13 +4486,13 @@ if $(NT) && $(MSVCNT)
 	}
 
 	# Create DLL using export attribute
-	actions ShLink_  bind SHLINKOBJS SHLINKLIBS SHLINKSHLIBS 
+	actions ShLink_  bind SHLINKOBJS SHLINKLIBS SHLINKSHLIBS
 	{
 		$(LINK) /DLL $(SHLINKFLAGS) /out:$(<[1]) $(>) $(SHLINKOBJS) $(SHLINKLIBS) $(SHLINKSHLIBS) $(SHSTDLIBS)
 	}
 
 	# Create DLL using .def file
-	actions ShLinkDef_ bind SHLINKDEFFILE SHLINKOBJS SHLINKLIBS SHLINKSHLIBS 
+	actions ShLinkDef_ bind SHLINKDEFFILE SHLINKOBJS SHLINKLIBS SHLINKSHLIBS
 	{
 		$(LINK) /DLL /DEF:$(SHLINKDEFFILE) $(SHLINKFLAGS) /out:$(<[1]) $(>) $(SHLINKOBJS) $(SHLINKLIBS) $(SHLINKSHLIBS) $(SHSTDLIBS)
 	}
@@ -4559,7 +4564,7 @@ else if $(OS2) && $(WATCOM)
 {
 	actions together piecemeal Archive
 	{
-		$(AR) $(<) +-$(>) 
+		$(AR) $(<) +-$(>)
 	}
 
 	actions Cc_
@@ -4572,7 +4577,7 @@ else if $(OS2) && $(WATCOM)
 		$(C++) /Fo=$(<) $(C++FLAGS) $(CCDEFS) $(CCHDRS) $(>)
 	}
 
-	actions Link_ bind LINKOBJS LINKLIBS LINKSHLIBS 
+	actions Link_ bind LINKOBJS LINKLIBS LINKSHLIBS
 	{
 		$(LINK) $(LINKFLAGS) $(P_LINKFLAGS) /Fe=$(<) $(UNDEFS) $(>) $(LINKOBJS) $(LINKLIBS) $(LINKSHLIBS) $(STDLIBS)
 	}
@@ -4589,19 +4594,19 @@ else if $(OS2) && $(WATCOM)
 
 else if $(VMS)
 {
-	actions updated together piecemeal Archive 
+	actions updated together piecemeal Archive
 	{
 		lib/replace $(<) $(>[1]) ,$(>[2-])
 	}
 
 	actions Cc_
-	{ 
-		$(CC)/obj=$(<) $(CCFLAGS) $(CCDEFS) $(CCHDRS) $(>) 
+	{
+		$(CC)/obj=$(<) $(CCFLAGS) $(CCDEFS) $(CCHDRS) $(>)
 	}
 
 	actions C++_
-	{ 
-		$(C++)/obj=$(<) $(C++FLAGS) $(CCDEFS) $(CCHDRS) $(>) 
+	{
+		$(C++)/obj=$(<) $(C++FLAGS) $(CCDEFS) $(CCHDRS) $(>)
 	}
 
 	actions piecemeal together existing Clean
@@ -4641,7 +4646,7 @@ else if $(VMS)
 
 else if $(MAC)
 {
-	actions together Archive 
+	actions together Archive
 	{
 		$(LINK) -library -o $(<) $(>)
 	}
@@ -4649,13 +4654,13 @@ else if $(MAC)
 	actions Cc_
 	{
 		set -e MWCincludes $(CCHDRS)
-		$(CC) -o $(<) $(CCFLAGS) $(CCDEFS) $(>) 
+		$(CC) -o $(<) $(CCFLAGS) $(CCDEFS) $(>)
 	}
 
 	actions C++_
 	{
 		set -e MWCincludes $(CCHDRS)
-		$(CC) -o $(<) $(C++FLAGS) $(CCDEFS) $(>) 
+		$(CC) -o $(<) $(C++FLAGS) $(CCDEFS) $(>)
 	}
 
 	actions Link_ bind LINKOBJS LINKLIBS LINKSHLIBS
@@ -4683,4 +4688,3 @@ DoInit ;
 
 #PeerInclude $(DOT) ;
 SubInclude $(DOT) ;
-
