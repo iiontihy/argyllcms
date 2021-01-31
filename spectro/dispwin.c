@@ -273,7 +273,7 @@ static BOOL CALLBACK MonitorEnumProc(
 
 BOOL (WINAPI* pEnumDisplayDevices)(PVOID,DWORD,PVOID,DWORD) = NULL;
 
-//#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
+#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
 
 /*typedef enum {
 	WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE,
@@ -284,7 +284,7 @@ BOOL (WINAPI* pEnumDisplayDevices)(PVOID,DWORD,PVOID,DWORD) = NULL;
 BOOL (WINAPI* pWcsAssociateColorProfileWithDevice)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR) = NULL;
 BOOL (WINAPI* pWcsDisassociateColorProfileFromDevice)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR) = NULL;
 
-//#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
+#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
 
 /* See if we can get the wanted function calls */
 /* return nz if OK */
@@ -300,11 +300,11 @@ static int setup_dyn_calls() {
 			dyn_inited = 0;
 
 		/* Vista calls */
-//#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
+#if !defined(NTDDI_LONGHORN) || NTDDI_VERSION < NTDDI_LONGHORN
 		pWcsAssociateColorProfileWithDevice = (BOOL (WINAPI*)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR)) GetProcAddress(LoadLibrary("mscms"), "WcsAssociateColorProfileWithDevice");
 		pWcsDisassociateColorProfileFromDevice = (BOOL (WINAPI*)(WCS_PROFILE_MANAGEMENT_SCOPE,PCWSTR,PCWSTR)) GetProcAddress(LoadLibrary("mscms"), "WcsDisassociateColorProfileFromDevice");
 		/* These are checked individually */
-//#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
+#endif  /* NTDDI_VERSION < NTDDI_LONGHORN */
 	}
 
 	return dyn_inited;

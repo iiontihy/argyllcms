@@ -1,7 +1,7 @@
 
 #ifndef DISPWIN_H
 
-/* 
+/*
  * Argyll Color Correction System
  * Display target patch window
  *
@@ -24,11 +24,12 @@
 #define INSTRUMENT_REACTIONTIME 0	/* default nominal instrument reaction time */
 
 /* Display rise and fall time model. This is CRT like */
-#define DISPLAY_RISE_TIME 0.04		/* Assumed rise time to 90% of target level */ 
+#define DISPLAY_RISE_TIME 0.04		/* Assumed rise time to 90% of target level */
 #define DISPLAY_FALL_TIME 0.25		/* Assumed fall time to 90% of target level */
 #define DISPLAY_SETTLE_AIM 0.1		/* Aim for 0.2 Delta E */
 
 #ifdef NT
+#include <sdkddkver.h>
 #define OEMRESOURCE
 #if !defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0501
 #define _WIN32_WINNT 0x0501
@@ -149,7 +150,7 @@ disppath *get_a_display(int ix);
 
 void free_a_disppath(disppath *path);
 
-extern int callback_ddebug;		/* Diagnostic global for get_displays() and get_a_display() */  
+extern int callback_ddebug;		/* Diagnostic global for get_displays() and get_a_display() */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - */
 /* Structure to handle RAMDAC values */
@@ -167,7 +168,7 @@ struct _ramdac {
 	int nent;		/* Number of entries, = 2^ndepth, typically = 2^rdepth, */
 					/* but may be different for some video cards. */
 					/* Will be 0 if ramdac is not accessible */
-					
+
 	double *v[3];	/* nent entries for RGB, values 0.0 - 1.0 */
 
 	/* Clone ourselves */
@@ -227,7 +228,7 @@ struct _dispwin {
 							/* overriden by EnvVar */
 	double settle_mult;	/* Settling time multiplier */
 	int do_resp_time_del;	/* NZ to compute and use expected display response time */
-	int do_update_del;		/* NZ to do update delay */ 
+	int do_update_del;		/* NZ to do update delay */
 	double extra_update_delay;	/* Test window internal extra delay (used in delay cal.) */
 	int nowin;			/* Don't create a test window */
 	int native;			/*  X0 = use current per channel calibration curve */
@@ -253,7 +254,7 @@ struct _dispwin {
 	char *AppName;
 	HWND hwnd;			/* Window handle */
 	HCURSOR curs;		/* Invisible cursor */
-	
+
 	MSG msg;
 	ATOM arv;
 
@@ -269,7 +270,7 @@ struct _dispwin {
 
 #ifdef UNIX_APPLE
 	CGDirectDisplayID ddid;
-	void *osx_cntx;			/* OSX specific info */	
+	void *osx_cntx;			/* OSX specific info */
 	int btf;				/* Flag, nz if window has been brought to the front once */
 	int winclose;			/* Flag, set to nz if window was closed */
 #endif /* UNIX_APPLE */
@@ -313,7 +314,7 @@ struct _dispwin {
 	int kdessrunning;			/* Disabled kde screensaver and is was enabled */
 
 	int dpmsenabled;			/* DPMS is enabled */
-	
+
 #endif /* UNIX_X11 */
 
 	void *pcntx;				/* Private context (ie., webwin, ccwin) */
@@ -335,7 +336,7 @@ struct _dispwin {
 	int nent;		/* Number of entries, = s^ndepth, typically = 2^rdepth, */
 					/* but may be different for some video cards. */
 					/* Will be 0 if ramdac is not accessible */
-					
+
 	int edepth;		/* Notional frame buffer/ramdac entry size in bits. (Bits actually used  */
 					/* may be less). This is just used to scale out_tvenc appropriately. */
 
@@ -372,10 +373,10 @@ struct _dispwin {
 
 	/* Change the patch display parameters. */
 	/* Optional - may be NULL */
-	int (*set_patch_win)(struct _dispwin *p, 
+	int (*set_patch_win)(struct _dispwin *p,
 		double hoff, double voff,		/* Offset from c. in fraction of screen, -1.0 .. 1.0 */
 		double area,					/* Patch area 0..1 */
-		dw_bg_type bge					/* Background */  
+		dw_bg_type bge					/* Background */
 	);
 
 	/* set patch user info */
@@ -439,4 +440,3 @@ void dispwin_del_ramdac(ramdac *r);
 
 #define DISPWIN_H
 #endif /* DISPWIN_H */
-
