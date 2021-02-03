@@ -1,5 +1,5 @@
 
-/* 
+/*
  * cgats library stdio and malloc utility classes.
  * Version 2.05
  *
@@ -107,6 +107,7 @@ cgats_write_name(cgats *p, const char *filename) {
 	if ((fp = new_cgatsFileStd_name(filename, "w")) == NULL)
 		return err(p,-1,"Unable to open file '%s' for writing",filename);
 	rv = p->write(p, fp);
+	fp->flush(fp);
 	fp->del(fp);
 
 	return rv;

@@ -1,5 +1,5 @@
 
-/* 
+/*
  * parse library stdio and malloc utility classes.
  */
 
@@ -305,6 +305,8 @@ cgatsFile *pp
 	cgatsAlloc *al = p->al;
 	int del_al   = p->del_al;
 
+	cgatsFileStd_flush(pp);
+
 	if (p->doclose != 0) {
 		if (fclose(p->fp) != 0)
 			rv = 2;
@@ -400,7 +402,7 @@ cgatsAlloc *al			/* heap allocator, NULL for default */
 
 	if ((fp = fopen(name, nmode)) == NULL)
 		return NULL;
-	
+
 	p = new_cgatsFileStd_fp_a(fp, al);
 
 	if (p != NULL) {

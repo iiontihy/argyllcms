@@ -1,5 +1,5 @@
 
-/* 
+/*
  * Committee for Graphics Arts Technologies Standards
  * CGATS.5 and IT8.7 family file I/O class
  * Version 2.05
@@ -11,7 +11,7 @@
  *
  * Copyright 1995, 1996, 2002, Graeme W. Gill
  * All rights reserved.
- * 
+ *
  * This material is licensed with an "MIT" free use license:-
  * see the License4.txt file in this directory for licensing details.
  */
@@ -30,7 +30,7 @@
 
 		include <locale.h>
 		char *old_locale, *saved_locale;
-     
+
 		old_locale = setlocale (LC_NUMERIC, NULL);
 		saved_locale = strdup (old_locale);
 		if (saved_locale == NULL)
@@ -38,7 +38,7 @@
 		setlocale (LC_NUMERIC, "C");
 
 		.... read or write ...
-     
+
 		setlocale (LC_NUMERIC, saved_locale);
 		free (saved_locale);
 
@@ -145,7 +145,7 @@ cgatsAlloc *al			/* memory allocator */
 	p->write      = cgats_write;
 	p->error      = cgats_error;
 	p->del        = cgats_del;
-	
+
 #ifndef SEPARATE_STD
 	p->read_name  = cgats_read_name;
 	p->write_name = cgats_write_name;
@@ -461,7 +461,7 @@ cgats_read(cgats *p, cgatsFile *fp) {
 					DBGF((DBGA,"Found CGATS file identifier\n"));
 					rstate = R_KWORDS;
 				} else {	/* See if it is an 'other' file identifier */
-					int iswild = 0;	
+					int iswild = 0;
 					DBGF((DBGA,"Checking for 'other' identifier\n"));
 
 					/* Check for non-wildcard "other" */
@@ -586,7 +586,7 @@ cgats_read(cgats *p, cgatsFile *fp) {
 			}
 			case R_KWORD_VALUE: {
 				/* Add a keyword and its value */
-				
+
 				DBGF((DBGA,"Got keyword value '%s'\n",kw));
 
 				/* Special case for read() use */
@@ -756,7 +756,7 @@ cgats_read(cgats *p, cgatsFile *fp) {
 							}
 						}
 					}
-					
+
 					tablef = p->ntables;	/* Finished data for current table */
 					rstate = R_IDENT;
 					break;
@@ -1109,7 +1109,7 @@ add_set(cgats *p, int table, ...) {
 		return err(p,-1,"cgats.add_set(), attempt to add set when no fields are defined");
 
 	t->nsets++;
-	
+
 	if (t->nsets > t->nsetsa) /* Allocate space for more sets */ {
 		/* Allocate set pointers in groups of 100 */
 		t->nsetsa += 100;
@@ -1174,7 +1174,7 @@ add_setarr(cgats *p, int table, cgats_set_elem *args) {
 		return err(p,-1,"cgats.add_setarr(), attempt to add set when no fields are defined");
 
 	t->nsets++;
-	
+
 	if (t->nsets > t->nsetsa) /* Allocate space for more sets */ {
 		/* Allocate set pointers in groups of 100 */
 		t->nsetsa += 100;
@@ -1272,7 +1272,7 @@ add_data_item(cgats *p, int table, void *data) {
 
 	if (t->ndf == 0) {	/* We're about to do the first element of a new set */
 		t->nsets++;
-		
+
 		if (t->nsets > t->nsetsa) { /* Allocate space for more sets */
 			/* Allocate set pointers in groups of 100 */
 			t->nsetsa += 100;
@@ -1327,7 +1327,7 @@ cgats_write(cgats *p, cgatsFile *fp) {
 				else
 					sfield[field] = 0;
 			}
-	
+
 		if (!t->sup_kwords)	/* If not suppressed */ {
 			/* Make sure table has basic keywords */
 			if ((i = p->find_kword(p,table,"ORIGINATOR")) < 0)	/* Create it */
@@ -1355,7 +1355,7 @@ cgats_write(cgats *p, cgatsFile *fp) {
 					return p->errc;
 				}
 			}
-	
+
 			/* And table type specific keywords */
 			/* (Not sure this is correct - CGATS.5 appendix J is not specific enough) */
 			switch(t->tt) {
@@ -1480,7 +1480,7 @@ cgats_write(cgats *p, cgatsFile *fp) {
 					}
 					al->free(al, qs);
 				}
-	
+
 				if ((qs = quote_cs(al, t->kdata[i])) == NULL) {
 					al->free(al, sfield);
 					return err(p,-2,"quote_cs() malloc failed!");
@@ -1505,7 +1505,7 @@ cgats_write(cgats *p, cgatsFile *fp) {
 		if (!t->sup_fields) {	/* If not suppressed */
 			if (fp->gprintf(fp,"\n") < 0)
 				goto write_error;
-	
+
 			/* Declare any non-standard fields */
 			for (field = 0; field < t->nfields; field++) {
 				if (p->emit_keywords && !sfield[field])	/* Non-standard */ {
@@ -1521,7 +1521,7 @@ cgats_write(cgats *p, cgatsFile *fp) {
 					al->free(al, qs);
 				}
 			}
-	
+
 			if (fp->gprintf(fp,"NUMBER_OF_FIELDS %d\n",t->nfields) < 0)
 				goto write_error;
 			if (fp->gprintf(fp,"BEGIN_DATA_FORMAT\n") < 0)
@@ -1606,6 +1606,9 @@ cgats_write(cgats *p, cgatsFile *fp) {
 			al->free(al, sfield);
 		sfield = NULL;
 	}
+
+	fp->flush(fp);
+  
 	return 0;
 
 write_error:
@@ -1991,7 +1994,7 @@ cgats_dump(cgats *p, cgatsFile *fp) {
 		int i,j;
 		t = &p->t[tn];
 
-	
+
 		fp->gprintf(fp,"\nTable %d:\n",tn);
 
 		switch(t->tt)	/* Table identifier */
@@ -2023,7 +2026,7 @@ cgats_dump(cgats *p, cgatsFile *fp) {
 			}
 
 		fp->gprintf(fp,"\nNumber of keywords = %d\n",t->nkwords);
-		
+
 		/* Dump all the keyword symbols and values */
 		for (i = 0; i < t->nkwords; i++) {
 			if (t->ksym[i] != NULL && t->kdata[i] != NULL)
@@ -2037,11 +2040,11 @@ cgats_dump(cgats *p, cgatsFile *fp) {
 			if (t->kcom[i] != NULL)
 				fp->gprintf(fp,"Comment '%s'\n",t->kcom[i]);
 		}
-			
+
 		fp->gprintf(fp,"\nNumber of field defs = %d\n",t->nfields);
 
 		/* Dump all the field symbols */
-		for (i = 0; i < t->nfields; i++) {		
+		for (i = 0; i < t->nfields; i++) {
 			char *fname;
 			switch(t->ftype[i]) {
 				case r_t:
@@ -2103,17 +2106,17 @@ main(int argc, char *argv[]) {
 	if (argc == 1) {
 		/* Write test */
 		pp = new_cgats();	/* Create a CGATS structure */
-	
+
 		if (pp->add_table(pp, cgats_5, 0) < 0	/* Start the first table */
 		 || pp->add_kword(pp, 0, NULL, NULL, "Comment only test comment") < 0
 		 || pp->add_kword(pp, 0, "TEST_KEY_WORD", "try this out", "Keyword comment") < 0
 		 || pp->add_kword(pp, 0, "TEST_KEY_WORD2", "try this\" out \"\" huh !", NULL) < 0
-	
+
 		 || pp->add_field(pp, 0, "SAMPLE_ID", cs_t) < 0
 		 || pp->add_field(pp, 0, "SAMPLE_LOC", nqcs_t) < 0
 		 || pp->add_field(pp, 0, "XYZ_X", r_t) < 0)
 			error("Initial error: '%s'",pp->err);
-	
+
 		if (pp->add_set(pp, 0, "1", "A1",  0.000000012345678) < 0
 		 || pp->add_set(pp, 0, "2", "A1",  0.00000012345678) < 0
 		 || pp->add_set(pp, 0, "3", "A1",  0.0000012345678) < 0
@@ -2138,17 +2141,17 @@ main(int argc, char *argv[]) {
 		 || pp->add_set(pp, 0, "22", "A5", 123456780000.0) < 0
 		 || pp->add_set(pp, 0, "23", "A5", 1234567800000.0) < 0)
 			error("Adding set error '%s'",pp->err);
-		
+
 		if (pp->add_table(pp, cgats_5, 0) < 0			/* Start the second table */
 		 || pp->set_table_flags(pp, 1, 1, 1, 1) < 0		/* Suppress id, kwords and fields */
 		 || pp->add_kword(pp, 1, NULL, NULL, "Second Comment only test comment") < 0)
 			error("Adding table error '%s'",pp->err);
-	
+
 		if (pp->add_field(pp, 1, "SAMPLE_ID", cs_t) < 0	/* Need to define fields same as table 0 */
 		 || pp->add_field(pp, 1, "SAMPLE_LOC", nqcs_t) < 0
 		 || pp->add_field(pp, 1, "XYZ_X", r_t) < 0)
 			error("Adding field error '%s'",pp->err);
-	
+
 		if (pp->add_set(pp, 1, "4", "A4",  -0.000012345678) < 0
 		 || pp->add_set(pp, 1, "5", "A5",  -0.00012345678) < 0
 		 || pp->add_set(pp, 1, "6", "A5",  -0.0012345678) < 0
@@ -2167,13 +2170,13 @@ main(int argc, char *argv[]) {
 		 || pp->add_set(pp, 1, "19", "A5", -12345678000.0) < 0
 		 || pp->add_set(pp, 1, "20", "A5", -123456780000.0) < 0)
 			error("Adding set 2 error '%s'",pp->err);
-	
+
 		if ((fp = new_cgatsFileStd_name("fred.it8", "w")) == NULL)
 			error("Error opening '%s' for writing","fred.it8");
-	
+
 		if (pp->write(pp, fp))
 			error("Write error : %s",pp->err);
-	
+
 		fp->del(fp);		/* Close file */
 		pp->del(pp);		/* Clean up */
 	}
@@ -2185,13 +2188,13 @@ main(int argc, char *argv[]) {
 	if (pp->add_other(pp, "CTI1") == -2
 	 || pp->add_other(pp, "CTI2") == -2
 	 || pp->add_other(pp, "CTI3") == -2)
-		error("Adding other error '%s'",pp->err); 
+		error("Adding other error '%s'",pp->err);
 
 	/* Setup to cope with colorblind files */
 	if (pp->add_other(pp, "CBSC") == -2
 	 || pp->add_other(pp, "CBTA") == -2
 	 || pp->add_other(pp, "CBPR") == -2)
-		error("Adding other 2 error '%s'",pp->err); 
+		error("Adding other 2 error '%s'",pp->err);
 
 	if (argc == 2)
 		fn = argv[1];
