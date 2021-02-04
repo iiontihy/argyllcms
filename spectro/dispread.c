@@ -997,7 +997,8 @@ int main(int argc, char *argv[]) {
 		ocg->add_kword(ocg, 0, "INSTRUMENT_TYPE_SPECTRAL", "NO" , NULL);
 	}
 
-	dr->del(dr);
+	//Original placement: moving the termination of the reader after the file creation
+	//dr->del(dr);
 
 	/* And save the result: */
 
@@ -1156,7 +1157,9 @@ int main(int argc, char *argv[]) {
 
 	if (verb)
 		printf("Written '%s'\n",outname);
-
+		
+	//New placement: moving the termination of the reader after the file creation
+	dr->del(dr);
 	icmps->del(icmps);
 	free(cols);
 	ocg->del(ocg);		/* Clean up */
@@ -1166,5 +1169,3 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
-
-
