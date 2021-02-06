@@ -9,4 +9,4 @@ grep -v "\.o" |\
 grep -v "\.a" |\
 grep -v "\.h" |\
 grep -v "\.c"`\
-/usr/bin
+./out
