@@ -57,7 +57,9 @@ static struct {
 	  { 0.76, 0.81, 0.11 },	
 	  { 0.76, 0.81, 0.11 } },	
 	{ ICX_BLACK,          ICX_C_BLACK,          ICX_S_BLACK,          ICX_PS_BLACK,
-	  { 0.01, 0.01, 0.01 },	
+	// The next line outlines the "glare" level of pure/zero black in Video RGB. 
+	// Original value was 0.01 which doesn't allow effective exloration of low brightness colors around pure zero values pure zero itself
+	  { 0.00, 0.00, 0.00 },	
 	  { 0.04, 0.04, 0.04 } },	
 	{ ICX_ORANGE,         ICX_C_ORANGE,         ICX_S_ORANGE,         ICX_PS_ORANGE,
 	  { 0.59, 0.41, 0.03 },	
@@ -620,7 +622,6 @@ inkmask mask			/* Colorant combination mask */
 	return 0;
 }
 
-
 /* - - - - - - - - - - - - - - - - - */
 /* Approximate device colorant model */
 
@@ -636,21 +637,19 @@ double d[ICX_MXINKS]	/* Input */
 		/* We assume a simple additive model with gamma */
 
 		XYZ[0] = XYZ[1] = XYZ[2] = 0.0;
+		double out[3];
 
 		for (e = 0; e < s->di; e++) {
-			double v = d[e];
-				
-			if (v < 0.0)
-				v = 0.0;
-			else if (v > 1.0)
-				v = 1.0;
-			if (v <= 0.03928)
-				v /= 12.92;
-			else
-				v = pow((0.055 + v)/1.055, 2.4);		/* Gamma */
 
-			for (j = 0; j < 3; j++)
-				XYZ[j] += v * icx_ink_table[s->iix[e]].aXYZ[j];
+			out[0] = d[e] * 100.0;
+			out[1] = out[2] = 0.0;
+			
+			// here we assume D50 as base of the transformation
+			icmLab2XYZ(&icmD50, out, out);
+
+			for (j = 0; j < 3; j++) {
+				XYZ[j] += out[0] * icx_ink_table[s->iix[e]].aXYZ[j];
+			}
 		}
 
 		/* Normalise Y to 1.0, & add black glare */
@@ -755,24 +754,3 @@ icxColorantLu *new_icxColorantLu(inkmask mask) {
 
 	return s;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

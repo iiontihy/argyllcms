@@ -229,18 +229,23 @@ pcpt_to_XYZ(pcpt *s, double *out, double *in) {
 	double inv[MXTD];
 
 	if (s->xmask == s->nmask) {
-		for (e = 0; e < s->di; e++)
+		for (e = 0; e < s->di; e++) {
 			inv[e] = icx_powlike(in[e], s->ixpow);
+		}
 	} else {
-		for (e = 0; e < s->di; e++)
+		for (e = 0; e < s->di; e++) {
 			inv[e] = 1.0 - icx_powlike(in[e], s->ixpow);
+		}
 	}
-	if (s->luo2 != NULL)
+	if (s->luo2 != NULL) {
 		s->luo2->lookup(s->luo2, out, inv);
-	else if (s->mlu != NULL)
+	}
+	else if (s->mlu != NULL) {
 		s->mlu->lookup(s->mlu, out, inv);
-	else  if (s->clu != NULL)
+	}
+	else  if (s->clu != NULL) {
 		s->clu->dev_to_XYZ(s->clu, out, inv);
+	}
 	else {	/* Linear conversion */
 		out[0] = 100.0 * inv[0];
 		out[1] = 100.0 * inv[1] - 50.0;
@@ -2985,4 +2990,3 @@ static double disprespt(cgats *pp, int p1, int p2) {
 
 	return xdelay;
 }
-

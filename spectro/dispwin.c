@@ -77,7 +77,6 @@
 #include <signal.h>
 #ifndef NT
 #include <unistd.h>
-#include <sdkddkver.h>
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -98,6 +97,7 @@
 #include "ccwin.h"
 #ifdef NT
 # include "madvrwin.h"
+# include <sdkddkver.h>
 #endif
 #include "insttypes.h"
 #include "inst.h"
