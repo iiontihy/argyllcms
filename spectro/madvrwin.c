@@ -336,7 +336,7 @@ double r, double g, double b	/* Color values 0.0 - 1.0 */
 	double kr, kf;
 	int update_delay = 0;
 
-	debugr("madvrwin_set_color called\n");
+	debugr2((errout,"madvrwin_set_color called with R-G-B values of: %f  %f  %f\n", r, b, g));
 
 	if (p->nowin)
 		return 1;
@@ -615,4 +615,3 @@ int ii = 0;
 
 	return p;
 }
-

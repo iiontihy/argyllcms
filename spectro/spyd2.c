@@ -1773,14 +1773,21 @@ spyd2_GetReading(
 
 		/* Decide whether to go around again */
 
-		if (maxtcnt <= (100/16) && readFlag != 0.0) { // readFlag is part of the OLED optimization for older devices
-			nframes *= 16;			/* Typically 16 seconds */
-			a1logd(p->log, 3, "spyd2_GetReading: using maximum integration time\n");
-		} else if (maxtcnt < 100 && readFlag != 0.0) { // readFlag is part of the OLED optimization for older devices
+		//if (maxtcnt <= (100/16) && readFlag != 0.0) { // readFlag is part of the OLED optimization for older devices
+		//	nframes *= 16;			/* Typically 16 seconds */
+		//	a1logd(p->log, 3, "spyd2_GetReading: using maximum integration time\n");
+		//} else if (maxtcnt < 100 && readFlag != 0.0) { // readFlag is part of the OLED optimization for older devices
+		if (maxtcnt < 100 ) {
+			double mulf;
+			double divisor = maxtcnt;
+		// 'divisor' with lower value results in integration time multiplier larger than 3.2 for dark colors.
+		// This leads the Spyder2 to experience USB communication errors both under Linux and Windows 
+			if( divisor < 33 ) { 
+				divisor = 33;
+			}
 		// END OLED optimization for older devices
 		//======================================================================
-			double mulf;
-			mulf = 100.0/maxtcnt;
+			mulf = 100.0/divisor;
 			mulf -= 0.8;			/* Just want to accumulate up to target, not re-do it */
 			nframes = (int)(nframes * mulf + 0.5);
 			a1logd(p->log, 3, "spyd2_GetReading: increasing total integration time "
