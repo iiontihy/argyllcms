@@ -1782,8 +1782,8 @@ spyd2_GetReading(
 			double divisor = maxtcnt;
 		// 'divisor' with lower value results in integration time multiplier larger than 3.2 for dark colors.
 		// This leads the Spyder2 to experience USB communication errors both under Linux and Windows 
-			if( divisor < 33 ) { 
-				divisor = 33;
+			if( divisor < 28 ) { 
+				divisor = 28;
 			}
 		// END OLED optimization for older devices
 		//======================================================================
